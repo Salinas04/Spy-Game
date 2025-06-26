@@ -1,6 +1,13 @@
 export default {
   // App title
   gameTitle: 'El Juego del Espía',
+  mainMenuTitle: 'Colección de Juegos',
+
+  // Menu
+  selectGame: 'Selecciona un Juego',
+  spyGame: 'El Juego del Espía',
+  wordGuessingGame: 'Juego de Adivinar Palabras',
+  returnToMainMenu: 'Volver al Menú Principal',
 
   // Common
   yes: 'Sí',
@@ -64,6 +71,29 @@ export default {
   theSpyWas: 'El Espía era:',
   theSpiesWere: 'Los Espías eran:',
   playAgain: 'Jugar de Nuevo',
+
+  // WordGuessingSetup.vue
+  maxWordsPerTeam: 'Máximo de Palabras por Equipo:',
+  maxWordsHelp: 'Establece el número de palabras que cada equipo debe ingresar.',
+  teamSetup: 'Configuración de Equipos',
+  teamName: 'Nombre del Equipo {number}:',
+  enterWordsForTeam: 'Ingresa Palabras para {team}',
+  enterWord: 'Ingresa una palabra...',
+  addWord: 'Añadir',
+  wordsRemaining: '{count} palabras restantes',
+  noWordsYet: 'Aún no hay palabras añadidas',
+  previousTeam: 'Equipo Anterior',
+  nextTeam: 'Siguiente Equipo',
+
+  // WordGuessingGame.vue
+  teamTurn: 'Turno de {team}',
+  guessWordsFrom: 'Adivina palabras de {team}',
+  startGuessing: 'Comenzar a Adivinar',
+  wordToGuess: 'Palabra a Adivinar:',
+  correctGuess: '¡Correcto!',
+  incorrectGuess: 'Incorrecto',
+  teamWins: '¡{team} Gana!',
+  finalScores: 'Puntuaciones Finales:',
 
   // Categories
   categories_list: {

@@ -16,11 +16,15 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['newGame']);
+const emit = defineEmits(['newGame', 'returnToMainMenu']);
 const { t } = useI18n();
 
 const startNewGame = () => {
   emit('newGame');
+};
+
+const goToMainMenu = () => {
+  emit('returnToMainMenu');
 };
 
 // Find all spy players
@@ -73,12 +77,21 @@ const isSingleSpy = spies.length === 1;
       </div>
 
       <transition name="fade-up" appear>
-        <button 
-          @click="startNewGame" 
-          class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
-        >
-          {{ t('playAgain') }}
-        </button>
+        <div class="space-y-3">
+          <button 
+            @click="startNewGame" 
+            class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
+          >
+            {{ t('playAgain') }}
+          </button>
+
+          <button 
+            @click="goToMainMenu" 
+            class="w-full bg-steel-gray hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-base font-medium transition-all"
+          >
+            {{ t('returnToMainMenu') }}
+          </button>
+        </div>
       </transition>
     </div>
   </div>

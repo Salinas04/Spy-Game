@@ -1,22 +1,56 @@
 <script setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import MainMenu from './components/MainMenu.vue';
 import StartScreen from './components/StartScreen.vue';
 import RoleAssignment from './components/RoleAssignment.vue';
 import GamePlay from './components/GamePlay.vue';
 import GameResults from './components/GameResults.vue';
+import WordGuessingSetup from './components/WordGuessingSetup.vue';
+import WordGuessingGame from './components/WordGuessingGame.vue';
 import LanguageSwitcher from './components/LanguageSwitcher.vue';
 import locationsData from './i18n/locations.js';
 
 // i18n
 const { locale } = useI18n();
 
-// Game state
+// App state
+const selectedGame = ref(null); // 'spy' or 'wordGuessing' or null (main menu)
+
+// Spy Game state
 const gamePhase = ref('start'); // 'start', 'roles', 'play', 'results'
 const players = ref([]);
 const selectedLocation = ref(null);
 const gameResult = ref(null);
 const selectedCategory = ref(null);
+
+// Word Guessing Game state
+const wordGuessingPhase = ref('setup'); // 'setup', 'play', 'results'
+const wordGuessingSettings = ref(null);
+const wordGuessingResult = ref(null);
+
+// Handle game selection from main menu
+const handleSelectGame = (gameType) => {
+  selectedGame.value = gameType;
+  if (gameType === 'spy') {
+    gamePhase.value = 'start';
+  } else if (gameType === 'wordGuessing') {
+    wordGuessingPhase.value = 'setup';
+    wordGuessingSettings.value = null;
+    wordGuessingResult.value = null;
+  }
+};
+
+// Word Guessing Game handlers
+const startWordGuessingGame = (settings) => {
+  wordGuessingSettings.value = settings;
+  wordGuessingPhase.value = 'play';
+};
+
+const handleWordGuessingGameOver = (result) => {
+  wordGuessingResult.value = result;
+  wordGuessingPhase.value = 'results';
+};
 
 // Start a new game with the specified settings
 const startGame = (gameSettings) => {
@@ -104,60 +138,100 @@ const handleGameOver = (result) => {
   gamePhase.value = 'results';
 };
 
-// Return to main menu
+// Return to spy game menu
 const returnToMenu = () => {
   gamePhase.value = 'start';
 };
 
-// Start a new game
+// Start a new spy game
 const newGame = () => {
+  gamePhase.value = 'start';
+};
+
+// Return to main menu
+const returnToMainMenu = () => {
+  selectedGame.value = null;
   gamePhase.value = 'start';
 };
 </script>
 
 <template>
-  <div class="app-container">
+  <div class="app-container" :class="{ 'menu-theme': selectedGame === null, 'spy-theme': selectedGame === 'spy', 'word-guessing-theme': selectedGame === 'wordGuessing' }">
     <!-- Language Switcher (positioned differently on mobile vs desktop) -->
-    <div class="hidden sm:block absolute top-4 left-4 z-50">
+    <div class="hidden sm:block absolute top-4 left-4 z-50" v-if="selectedGame !== null">
       <LanguageSwitcher />
     </div>
 
     <transition name="fade" mode="out-in" appear>
-      <!-- Start Screen -->
-      <StartScreen 
-        v-if="gamePhase === 'start'" 
-        @start-game="startGame" 
-        key="start"
+      <!-- Main Menu -->
+      <MainMenu 
+        v-if="selectedGame === null" 
+        @selectGame="handleSelectGame" 
+        key="main-menu"
       />
 
-      <!-- Role Assignment -->
-      <RoleAssignment 
-        v-else-if="gamePhase === 'roles'" 
-        :players="players" 
-        :location="selectedLocation" 
-        @continue-to-game="continueToGame" 
-        key="roles"
-      />
+      <!-- Spy Game -->
+      <template v-else-if="selectedGame === 'spy'">
+        <!-- Start Screen -->
+        <StartScreen 
+          v-if="gamePhase === 'start'" 
+          @start-game="startGame" 
+          @returnToMainMenu="returnToMainMenu"
+          key="spy-start"
+        />
 
-      <!-- Game Play -->
-      <GamePlay 
-        v-else-if="gamePhase === 'play'" 
-        :players="players" 
-        :location="selectedLocation" 
-        @game-over="handleGameOver"
-        @returnToMenu="returnToMenu" 
-        key="play"
-      />
+        <!-- Role Assignment -->
+        <RoleAssignment 
+          v-else-if="gamePhase === 'roles'" 
+          :players="players" 
+          :location="selectedLocation" 
+          @continue-to-game="continueToGame" 
+          key="spy-roles"
+        />
 
-      <!-- Game Results -->
-      <GameResults 
-        v-else-if="gamePhase === 'results'" 
-        :result="gameResult" 
-        :location="selectedLocation" 
-        :players="players" 
-        @new-game="newGame" 
-        key="results"
-      />
+        <!-- Game Play -->
+        <GamePlay 
+          v-else-if="gamePhase === 'play'" 
+          :players="players" 
+          :location="selectedLocation" 
+          @game-over="handleGameOver"
+          @returnToMenu="returnToMenu" 
+          key="spy-play"
+        />
+
+        <!-- Game Results -->
+        <GameResults 
+          v-else-if="gamePhase === 'results'" 
+          :result="gameResult" 
+          :location="selectedLocation" 
+          :players="players" 
+          @new-game="newGame" 
+          @returnToMainMenu="returnToMainMenu"
+          key="spy-results"
+        />
+      </template>
+
+      <!-- Word Guessing Game -->
+      <template v-else-if="selectedGame === 'wordGuessing'">
+        <!-- Setup Phase -->
+        <WordGuessingSetup 
+          v-if="wordGuessingPhase === 'setup'" 
+          @startGame="startWordGuessingGame" 
+          @returnToMainMenu="returnToMainMenu"
+          key="word-guessing-setup"
+        />
+
+        <!-- Play Phase -->
+        <WordGuessingGame 
+          v-else-if="wordGuessingPhase === 'play' || wordGuessingPhase === 'results'" 
+          :gameSettings="wordGuessingSettings" 
+          @gameOver="handleWordGuessingGameOver"
+          @returnToMainMenu="returnToMainMenu"
+          key="word-guessing-play"
+        />
+
+        <!-- Results Phase (handled within the game component) -->
+      </template>
     </transition>
     <!-- Footer -->
     <div class="absolute bottom-0 w-full py-2 text-center text-steel-gray text-sm bg-transparent">
@@ -167,6 +241,65 @@ const newGame = () => {
 </template>
 
 <style>
+/* Menu Theme - Modern, sobrio y limpio */
+.menu-theme {
+  --color-background: #1E1E2F; /* azul oscuro casi negro */
+  --color-text: #FFFFFF; /* blanco */
+  --color-text-secondary: #A0A0B8; /* gris claro azulado */
+  --color-button-primary: #4B61FF; /* azul eléctrico */
+  --color-button-primary-hover: #6879FF; /* azul más claro */
+  --color-button-text: #FFFFFF; /* blanco */
+  --color-border: #35364A; /* azul grisáceo oscuro */
+
+  /* Update semantic colors */
+  --color-heading: var(--color-text);
+  --color-primary: var(--color-button-primary);
+  --color-secondary: var(--color-button-primary-hover);
+  --color-accent: var(--color-text-secondary);
+  --color-background-soft: #2A2A3F; /* slightly lighter than background */
+  --color-background-mute: #2A2A3F;
+  --color-steel-gray: var(--color-text-secondary);
+  --color-yellow: var(--color-button-primary);
+  --color-mustard: var(--color-button-primary-hover);
+}
+
+/* Spy Game Theme - Original dark theme */
+.spy-theme {
+  --color-background: var(--color-black);
+  --color-text: var(--color-white);
+  --color-heading: var(--color-yellow);
+  --color-primary: var(--color-yellow);
+  --color-secondary: var(--color-mustard);
+  --color-accent: var(--color-steel-gray);
+  --color-background-soft: var(--color-dark-gray);
+  --color-background-mute: var(--color-dark-gray);
+  --color-button-primary: var(--color-yellow);
+  --color-button-primary-hover: var(--color-mustard);
+  --color-button-text: var(--color-black);
+}
+
+/* Word Guessing Theme - Alegre, energético y divertido */
+.word-guessing-theme {
+  --color-background: #FFF8E7; /* beige claro */
+  --color-text: #3D405B; /* azul marino suave */
+  --color-text-highlight: #F25F5C; /* rojo coral vibrante */
+  --color-button-primary: #F4A261; /* naranja suave */
+  --color-button-primary-hover: #E76F51; /* rojo anaranjado */
+  --color-button-text: #FFFFFF; /* blanco */
+  --color-border: #264653; /* azul petróleo oscuro */
+
+  /* Update semantic colors */
+  --color-heading: var(--color-text-highlight);
+  --color-primary: var(--color-button-primary);
+  --color-secondary: var(--color-button-primary-hover);
+  --color-accent: var(--color-border);
+  --color-background-soft: #F9F2E0; /* slightly darker than background */
+  --color-background-mute: #F9F2E0;
+  --color-steel-gray: #8D8FA1; /* muted version of text color */
+  --color-yellow: var(--color-button-primary);
+  --color-mustard: var(--color-button-primary-hover);
+}
+
 .app-container {
   min-height: 100vh;
   width: 100%;

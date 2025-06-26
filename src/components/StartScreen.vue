@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import locationsData from '../i18n/locations.js';
 import LanguageSwitcher from './LanguageSwitcher.vue';
 
-const emit = defineEmits(['startGame']);
+const emit = defineEmits(['startGame', 'returnToMainMenu']);
 const { t, locale } = useI18n();
 
 const playerCount = ref(3); // Default minimum player count
@@ -63,6 +63,10 @@ const startGame = () => {
     spyOption: spyOption.value,
     customSpiesCount: customSpiesCount.value
   });
+};
+
+const goToMainMenu = () => {
+  emit('returnToMainMenu');
 };
 </script>
 
@@ -207,9 +211,16 @@ const startGame = () => {
         <div>
           <button
             @click="startGame"
-            class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
+            class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg mb-3"
           >
             {{ t('startGame') }}
+          </button>
+
+          <button
+            @click="goToMainMenu"
+            class="w-full bg-steel-gray hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-base font-medium transition-all"
+          >
+            {{ t('returnToMainMenu') }}
           </button>
 
           <!-- Language Switcher (mobile only) -->

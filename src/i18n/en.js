@@ -1,6 +1,13 @@
 export default {
   // App title
   gameTitle: 'The Spy Game',
+  mainMenuTitle: 'Game Collection',
+
+  // Menu
+  selectGame: 'Select a Game',
+  spyGame: 'The Spy Game',
+  wordGuessingGame: 'Word Guessing Game',
+  returnToMainMenu: 'Return to Main Menu',
 
   // Common
   yes: 'Yes',
@@ -64,6 +71,29 @@ export default {
   theSpyWas: 'The Spy was:',
   theSpiesWere: 'The Spies were:',
   playAgain: 'Play Again',
+
+  // WordGuessingSetup.vue
+  maxWordsPerTeam: 'Maximum Words Per Team:',
+  maxWordsHelp: 'Set the number of words each team needs to enter.',
+  teamSetup: 'Team Setup',
+  teamName: 'Team {number} Name:',
+  enterWordsForTeam: 'Enter Words for {team}',
+  enterWord: 'Enter a word...',
+  addWord: 'Add',
+  wordsRemaining: '{count} words remaining',
+  noWordsYet: 'No words added yet',
+  previousTeam: 'Previous Team',
+  nextTeam: 'Next Team',
+
+  // WordGuessingGame.vue
+  teamTurn: '{team}\'s Turn',
+  guessWordsFrom: 'Guess words from {team}',
+  startGuessing: 'Start Guessing',
+  wordToGuess: 'Word to Guess:',
+  correctGuess: 'Correct!',
+  incorrectGuess: 'Incorrect',
+  teamWins: '{team} Wins!',
+  finalScores: 'Final Scores:',
 
   // Categories
   categories_list: {
