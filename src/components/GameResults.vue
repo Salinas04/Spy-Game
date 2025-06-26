@@ -23,8 +23,9 @@ const startNewGame = () => {
   emit('newGame');
 };
 
-// Find the spy player
-const spy = props.players.find(player => player.isSpy);
+// Find all spy players
+const spies = props.players.filter(player => player.isSpy);
+const isSingleSpy = spies.length === 1;
 </script>
 
 <template>
@@ -54,8 +55,19 @@ const spy = props.players.find(player => player.isSpy);
 
         <transition name="slide-left" appear>
           <div class="bg-black/70 p-3 sm:p-4 rounded-lg border border-yellow">
-            <h3 class="text-lg sm:text-xl font-semibold mb-1 sm:mb-2 text-mustard">{{ t('theSpyWas') }}</h3>
-            <p class="text-xl sm:text-2xl font-bold text-yellow">{{ t('player', { number: props.players.indexOf(spy) + 1 }) }}</p>
+            <h3 class="text-lg sm:text-xl font-semibold mb-1 sm:mb-2 text-mustard">
+              {{ isSingleSpy ? t('theSpyWas') : t('theSpiesWere') }}
+            </h3>
+            <div v-if="isSingleSpy">
+              <p class="text-xl sm:text-2xl font-bold text-yellow">
+                {{ t('player', { number: props.players.indexOf(spies[0]) + 1 }) }}
+              </p>
+            </div>
+            <div v-else>
+              <p v-for="spy in spies" :key="spy.id" class="text-xl sm:text-2xl font-bold text-yellow mb-1 last:mb-0">
+                {{ t('player', { number: props.players.indexOf(spy) + 1 }) }}
+              </p>
+            </div>
           </div>
         </transition>
       </div>

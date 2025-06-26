@@ -11,6 +11,9 @@ const playerCount = ref(3); // Default minimum player count
 const minPlayers = 3;
 const maxPlayers = 10;
 
+// Multiple spies option
+const multipleSpies = ref(false); // Default to single spy
+
 // Category selection
 const selectedCategories = ref(['all']); // Array of selected category ids
 const categories = computed(() => [
@@ -47,7 +50,8 @@ const toggleCategory = (categoryId) => {
 const startGame = () => {
   emit('startGame', {
     playerCount: playerCount.value,
-    categoryIds: selectedCategories.value
+    categoryIds: selectedCategories.value,
+    multipleSpies: multipleSpies.value
   });
 };
 </script>
@@ -87,10 +91,28 @@ const startGame = () => {
         </div>
       </transition>
 
+      <transition name="fade-right" appear>
+        <div class="mb-6">
+          <label class="block text-lg mb-2">{{ t('multipleSpies') }}</label>
+          <div class="flex items-center">
+            <input 
+              type="checkbox"
+              id="multipleSpies"
+              v-model="multipleSpies"
+              class="mr-2 h-5 w-5 accent-yellow"
+            />
+            <label for="multipleSpies" class="cursor-pointer hover:text-yellow transition-colors">
+              {{ multipleSpies ? t('yes') : t('no') }}
+            </label>
+          </div>
+          <p class="text-sm mt-2 text-steel-gray">{{ t('multipleSpiesHelp') }}</p>
+        </div>
+      </transition>
+
       <transition name="fade-left" appear>
         <div class="mb-6">
           <label class="block text-lg mb-2">{{ t('categories') }}</label>
-          <div class="bg-black/70 rounded-lg p-4 border border-steel-gray">
+          <div class="bg-black/70 rounded-lg p-4 border border-steel-gray max-h-60 overflow-y-auto">
             <transition-group name="list" tag="div">
               <div 
                 v-for="category in categories" 

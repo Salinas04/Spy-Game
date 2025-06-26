@@ -36,9 +36,30 @@ const startGame = (gameSettings) => {
     });
   }
 
-  // Randomly select one player to be the spy
-  const spyIndex = Math.floor(Math.random() * playerCount);
-  players.value[spyIndex].isSpy = true;
+  // Assign spies
+  if (gameSettings.multipleSpies) {
+    // Calculate the maximum number of spies (playerCount - 2) to ensure at least 2 non-spy players
+    const maxSpies = playerCount - 2;
+
+    // Randomly determine the number of spies between 1 and maxSpies
+    const spyCount = Math.floor(Math.random() * maxSpies) + 1;
+
+    // Create an array of player indices and shuffle it
+    const indices = Array.from({ length: playerCount }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]]; // Swap elements
+    }
+
+    // Assign the first spyCount indices as spies
+    for (let i = 0; i < spyCount; i++) {
+      players.value[indices[i]].isSpy = true;
+    }
+  } else {
+    // Original logic: just one spy
+    const spyIndex = Math.floor(Math.random() * playerCount);
+    players.value[spyIndex].isSpy = true;
+  }
 
   // Get locations based on selected categories
   let availableLocations = [];
