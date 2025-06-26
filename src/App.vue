@@ -175,5 +175,10 @@ const newGame = () => {
   overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
   position: relative; /* For absolute positioning of footer */
   padding-bottom: 2rem; /* Space for footer */
+  /* Safe area insets for iPhone notch */
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 </style>
