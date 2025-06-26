@@ -220,11 +220,11 @@ onUnmounted(() => {
           <div 
             v-for="(score, index) in teamScores" 
             :key="`team-${index}`"
-            class="text-center p-2 rounded-lg"
+            class="text-center p-2 sm:p-3 rounded-lg w-[48%] sm:w-auto"
             :class="{ 'bg-[var(--color-button-primary)]/20 border border-[var(--color-button-primary)]': index === currentTeamIndex }"
           >
-            <p class="font-semibold">{{ teamNames[index] }}</p>
-            <p class="text-2xl font-bold">{{ score }}</p>
+            <p class="font-semibold text-sm sm:text-base">{{ teamNames[index] }}</p>
+            <p class="text-xl sm:text-2xl font-bold">{{ score }}</p>
           </div>
         </div>
 
@@ -255,11 +255,11 @@ onUnmounted(() => {
             ></div>
           </div>
 
-          <div class="flex justify-center space-x-4">
+          <div class="flex justify-center space-x-2 sm:space-x-4">
             <button 
               v-if="!timerStarted"
               @click="startTimer"
-              class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-4 py-2 rounded-lg transition-all"
+              class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-full"
             >
               {{ t('startGuessing') }}
             </button>
@@ -267,14 +267,14 @@ onUnmounted(() => {
               <button 
                 v-if="timerActive"
                 @click="pauseTimer"
-                class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-4 py-2 rounded-lg transition-all"
+                class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-full"
               >
                 {{ t('pauseTimer') }}
               </button>
               <button 
                 v-else
                 @click="startTimer"
-                class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-4 py-2 rounded-lg transition-all"
+                class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-full"
               >
                 {{ t('resumeTimer') }}
               </button>
@@ -285,8 +285,8 @@ onUnmounted(() => {
         <!-- Current Word -->
         <div v-if="timerStarted" class="mb-6">
           <h3 class="text-lg font-semibold mb-2 text-[var(--color-heading)]">{{ t('wordToGuess') }}</h3>
-          <div class="bg-[var(--color-background-soft)]/70 p-4 rounded-lg border border-[var(--color-button-primary)] text-center">
-            <p class="text-2xl font-bold text-[var(--color-text-highlight)]">{{ currentWord }}</p>
+          <div class="bg-[var(--color-background-soft)]/70 p-4 sm:p-6 rounded-lg border-2 border-[var(--color-button-primary)] text-center shadow-md">
+            <p class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-text-highlight)]">{{ currentWord }}</p>
           </div>
         </div>
 
@@ -294,7 +294,7 @@ onUnmounted(() => {
         <div v-if="timerStarted" class="mb-6 flex flex-col space-y-3">
           <button 
             @click="handleCorrectGuess"
-            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
+            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-4 sm:py-3 px-6 rounded-lg text-lg font-bold transition-all shadow-md hover:shadow-lg"
             :disabled="!timerActive"
           >
             {{ t('correctGuess') }}
@@ -305,7 +305,7 @@ onUnmounted(() => {
         <!-- Return to Main Menu -->
         <button
           @click="returnToMainMenu"
-          class="w-full bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] py-2 px-4 rounded-lg text-base font-medium transition-all"
+          class="w-full bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all mt-2"
         >
           {{ t('returnToMainMenu') }}
         </button>

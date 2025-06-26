@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MainMenu from './components/MainMenu.vue';
 import StartScreen from './components/StartScreen.vue';
@@ -16,6 +16,30 @@ const { locale } = useI18n();
 
 // App state
 const selectedGame = ref(null); // 'spy' or 'wordGuessing' or null (main menu)
+
+// Function to update theme color meta tag
+const updateThemeColor = (game) => {
+  const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+  if (metaThemeColor) {
+    if (game === 'spy') {
+      metaThemeColor.setAttribute('content', '#000000'); // Black for spy game
+    } else if (game === 'wordGuessing') {
+      metaThemeColor.setAttribute('content', '#FFF8E7'); // Light beige for word guessing game
+    } else {
+      metaThemeColor.setAttribute('content', '#1E1E2F'); // Dark blue for main menu
+    }
+  }
+};
+
+// Watch for changes in selectedGame and update theme color
+watch(selectedGame, (newGame) => {
+  updateThemeColor(newGame);
+});
+
+// Initialize theme color on component mount
+onMounted(() => {
+  updateThemeColor(selectedGame.value);
+});
 
 // Spy Game state
 const gamePhase = ref('start'); // 'start', 'roles', 'play', 'results'

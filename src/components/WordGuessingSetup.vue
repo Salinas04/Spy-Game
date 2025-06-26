@@ -187,11 +187,11 @@ const goToMainMenu = () => {
             </div>
 
             <!-- Fine-tuning Controls -->
-            <div class="flex items-center justify-between mt-4">
-              <div class="flex items-center">
+            <div class="flex flex-col sm:flex-row items-center justify-between mt-4 space-y-3 sm:space-y-0">
+              <div class="flex items-center w-full sm:w-auto justify-center sm:justify-start">
                 <button 
                   @click="decreaseMaxWordsByOne" 
-                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] w-10 h-10 rounded-full flex items-center justify-center transition-all"
+                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] w-12 h-12 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all"
                   :disabled="maxWordsPerTeam <= 1"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -200,22 +200,22 @@ const goToMainMenu = () => {
                 </button>
                 <button 
                   @click="decreaseMaxWords" 
-                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] ml-2 px-3 py-2 rounded-lg transition-all text-sm"
+                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] ml-2 px-4 sm:px-3 py-3 sm:py-2 rounded-lg transition-all text-base sm:text-sm font-medium"
                   :disabled="maxWordsPerTeam <= 50"
                 >
                   -50
                 </button>
               </div>
-              <div class="flex items-center">
+              <div class="flex items-center w-full sm:w-auto justify-center sm:justify-end">
                 <button 
                   @click="increaseMaxWords" 
-                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-3 py-2 rounded-lg transition-all text-sm"
+                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-4 sm:px-3 py-3 sm:py-2 rounded-lg transition-all text-base sm:text-sm font-medium"
                 >
                   +50
                 </button>
                 <button 
                   @click="increaseMaxWordsByOne" 
-                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] ml-2 w-10 h-10 rounded-full flex items-center justify-center transition-all"
+                  class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] ml-2 w-12 h-12 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -253,18 +253,18 @@ const goToMainMenu = () => {
             {{ t('enterWordsForTeam', { team: currentTeamName }) }}
           </h3>
 
-          <div class="flex items-center mb-4">
+          <div class="flex flex-col sm:flex-row items-center mb-4 space-y-2 sm:space-y-0">
             <input 
               type="text"
               v-model="currentWord"
               @keyup.enter="addWord"
               :placeholder="t('enterWord')"
-              class="flex-grow bg-[var(--color-background-soft)]/70 border border-[var(--color-border)] rounded-l-lg px-3 py-2 text-[var(--color-text)] focus:border-[var(--color-button-primary)] focus:outline-none"
+              class="w-full sm:flex-grow bg-[var(--color-background-soft)]/70 border border-[var(--color-border)] rounded-lg sm:rounded-l-lg sm:rounded-r-none px-3 py-3 sm:py-2 text-[var(--color-text)] focus:border-[var(--color-button-primary)] focus:outline-none"
               :disabled="isCurrentTeamComplete"
             />
             <button 
               @click="addWord"
-              class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-4 py-2 rounded-r-lg transition-all"
+              class="w-full sm:w-auto bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-4 py-3 sm:py-2 rounded-lg sm:rounded-l-none sm:rounded-r-lg transition-all font-medium"
               :disabled="!currentWord.trim() || isCurrentTeamComplete"
             >
               {{ t('addWord') }}
@@ -298,17 +298,17 @@ const goToMainMenu = () => {
           </div>
 
           <!-- Team Navigation -->
-          <div class="flex justify-between mt-4" v-if="teamCount > 1">
+          <div class="flex justify-between mt-4 space-x-2 sm:space-x-4" v-if="teamCount > 1">
             <button 
               @click="currentTeamIndex = Math.max(0, currentTeamIndex - 1)"
-              class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-4 py-2 rounded-lg transition-all"
+              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
               :disabled="currentTeamIndex === 0"
             >
               {{ t('previousTeam') }}
             </button>
             <button 
               @click="currentTeamIndex = Math.min(teamCount - 1, currentTeamIndex + 1)"
-              class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-4 py-2 rounded-lg transition-all"
+              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
               :disabled="currentTeamIndex === teamCount - 1"
             >
               {{ t('nextTeam') }}
@@ -322,7 +322,7 @@ const goToMainMenu = () => {
         <div>
           <button
             @click="startGame"
-            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg mb-3"
+            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-4 sm:py-3 px-6 rounded-lg text-lg font-bold transition-all shadow-md hover:shadow-lg mb-4 sm:mb-3"
             :disabled="!areAllTeamsComplete"
           >
             {{ t('startGame') }}
@@ -330,7 +330,7 @@ const goToMainMenu = () => {
 
           <button
             @click="goToMainMenu"
-            class="w-full bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] py-2 px-4 rounded-lg text-base font-medium transition-all"
+            class="w-full bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all"
           >
             {{ t('returnToMainMenu') }}
           </button>
