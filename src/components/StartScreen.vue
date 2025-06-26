@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import locationsData from '../i18n/locations.js';
 import LanguageSwitcher from './LanguageSwitcher.vue';
@@ -11,8 +11,17 @@ const playerCount = ref(3); // Default minimum player count
 const minPlayers = 3;
 const maxPlayers = 15;
 
-// Multiple spies option
-const multipleSpies = ref(false); // Default to single spy
+// Spy options
+const spyOption = ref('single'); // 'single', 'random', or 'custom'
+const customSpiesCount = ref(1); // Default to 1 spy for custom option
+
+// Watch player count to ensure customSpiesCount is valid
+watch(playerCount, (newCount) => {
+  const maxSpies = newCount - 2; // Ensure at least 2 non-spy players
+  if (customSpiesCount.value > maxSpies) {
+    customSpiesCount.value = maxSpies;
+  }
+});
 
 // Category selection
 const selectedCategories = ref(['all']); // Array of selected category ids
@@ -51,7 +60,8 @@ const startGame = () => {
   emit('startGame', {
     playerCount: playerCount.value,
     categoryIds: selectedCategories.value,
-    multipleSpies: multipleSpies.value
+    spyOption: spyOption.value,
+    customSpiesCount: customSpiesCount.value
   });
 };
 </script>
@@ -93,19 +103,76 @@ const startGame = () => {
 
       <transition name="fade-right" appear>
         <div class="mb-6">
-          <label class="block text-lg mb-2">{{ t('multipleSpies') }}</label>
-          <div class="flex items-center">
-            <input 
-              type="checkbox"
-              id="multipleSpies"
-              v-model="multipleSpies"
-              class="mr-2 h-5 w-5 accent-yellow"
-            />
-            <label for="multipleSpies" class="cursor-pointer hover:text-yellow transition-colors">
-              {{ multipleSpies ? t('yes') : t('no') }}
-            </label>
+          <label class="block text-lg mb-2">{{ t('spyOptions') }}</label>
+          <div class="flex flex-col space-y-2">
+            <!-- Single Spy Option -->
+            <div class="flex items-center">
+              <input 
+                type="radio"
+                id="singleSpy"
+                value="single"
+                v-model="spyOption"
+                class="mr-2 h-5 w-5 accent-yellow"
+              />
+              <label for="singleSpy" class="cursor-pointer hover:text-yellow transition-colors">
+                {{ t('singleSpy') }}
+              </label>
+            </div>
+
+            <!-- Random Multiple Spies Option -->
+            <div class="flex items-center">
+              <input 
+                type="radio"
+                id="randomSpies"
+                value="random"
+                v-model="spyOption"
+                class="mr-2 h-5 w-5 accent-yellow"
+              />
+              <label for="randomSpies" class="cursor-pointer hover:text-yellow transition-colors">
+                {{ t('randomSpies') }}
+              </label>
+            </div>
+
+            <!-- Custom Spies Option -->
+            <div class="flex items-center">
+              <input 
+                type="radio"
+                id="customSpies"
+                value="custom"
+                v-model="spyOption"
+                class="mr-2 h-5 w-5 accent-yellow"
+              />
+              <label for="customSpies" class="cursor-pointer hover:text-yellow transition-colors">
+                {{ t('customSpies') }}
+              </label>
+            </div>
+
+            <!-- Custom Spies Count (only visible when custom option is selected) -->
+            <div v-if="spyOption === 'custom'" class="ml-7 mt-2">
+              <label for="customSpiesCount" class="block text-sm mb-1">{{ t('customSpiesCount') }}</label>
+              <div class="flex items-center">
+                <button 
+                  @click="customSpiesCount > 1 ? customSpiesCount-- : null" 
+                  class="bg-yellow hover:bg-mustard text-black px-3 py-1 rounded-l-lg transition-all"
+                  :disabled="customSpiesCount <= 1"
+                >
+                  -
+                </button>
+                <transition name="scale" mode="out-in">
+                  <span :key="customSpiesCount" class="bg-black text-yellow px-4 py-1 text-lg font-bold">{{ customSpiesCount }}</span>
+                </transition>
+                <button 
+                  @click="customSpiesCount < (playerCount - 2) ? customSpiesCount++ : null" 
+                  class="bg-yellow hover:bg-mustard text-black px-3 py-1 rounded-r-lg transition-all"
+                  :disabled="customSpiesCount >= (playerCount - 2)"
+                >
+                  +
+                </button>
+              </div>
+              <p class="text-xs mt-1 text-steel-gray">{{ t('customSpiesHelp') }}</p>
+            </div>
           </div>
-          <p class="text-sm mt-2 text-steel-gray">{{ t('multipleSpiesHelp') }}</p>
+          <p v-if="spyOption === 'random'" class="text-sm mt-2 text-steel-gray">{{ t('multipleSpiesHelp') }}</p>
         </div>
       </transition>
 

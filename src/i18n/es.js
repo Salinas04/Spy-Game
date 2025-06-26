@@ -5,6 +5,12 @@ export default {
   // Common
   yes: 'Sí',
   no: 'No',
+  spyOptions: 'Opciones de Espías:',
+  singleSpy: 'Un Solo Espía',
+  randomSpies: 'Espías Múltiples Aleatorios',
+  customSpies: 'Espías Personalizados',
+  customSpiesCount: 'Número de Espías:',
+  customSpiesHelp: 'Introduce el número de espías que deseas. Siempre habrá al menos 2 jugadores que no sean espías.',
 
   // StartScreen.vue
   gameSetup: 'Configuración del Juego',
