@@ -1,0 +1,149 @@
+<script setup>
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import StartScreen from './components/StartScreen.vue';
+import RoleAssignment from './components/RoleAssignment.vue';
+import GamePlay from './components/GamePlay.vue';
+import GameResults from './components/GameResults.vue';
+import LanguageSwitcher from './components/LanguageSwitcher.vue';
+import locationsData from './i18n/locations.js';
+
+// i18n
+const { locale } = useI18n();
+
+// Game state
+const gamePhase = ref('start'); // 'start', 'roles', 'play', 'results'
+const players = ref([]);
+const selectedLocation = ref(null);
+const gameResult = ref(null);
+const selectedCategory = ref(null);
+
+// Start a new game with the specified settings
+const startGame = (gameSettings) => {
+  // Reset game state
+  players.value = [];
+  gameResult.value = null;
+
+  const playerCount = gameSettings.playerCount;
+  const categoryIds = gameSettings.categoryIds;
+  selectedCategory.value = categoryIds; // Now storing an array of category IDs
+
+  // Create player objects
+  for (let i = 0; i < playerCount; i++) {
+    players.value.push({
+      id: i,
+      isSpy: false
+    });
+  }
+
+  // Randomly select one player to be the spy
+  const spyIndex = Math.floor(Math.random() * playerCount);
+  players.value[spyIndex].isSpy = true;
+
+  // Get locations based on selected categories
+  let availableLocations = [];
+
+  // If 'all' is included, use all locations
+  if (categoryIds.includes('all')) {
+    availableLocations = locationsData.getAllLocations(locale.value);
+  } else {
+    // Otherwise, combine locations from all selected categories
+    categoryIds.forEach(categoryId => {
+      const category = locationsData[locale.value].categories.find(cat => cat.id === categoryId);
+      if (category) {
+        availableLocations = availableLocations.concat(category.locations);
+      }
+    });
+  }
+
+  // If no locations are available (shouldn't happen with our UI logic), use all locations
+  if (availableLocations.length === 0) {
+    availableLocations = locationsData.getAllLocations(locale.value);
+  }
+
+  // Randomly select a location from available locations
+  selectedLocation.value = availableLocations[Math.floor(Math.random() * availableLocations.length)].name;
+
+  // Move to role assignment phase
+  gamePhase.value = 'roles';
+};
+
+// Continue to gameplay after roles have been assigned
+const continueToGame = () => {
+  gamePhase.value = 'play';
+};
+
+// Handle game over
+const handleGameOver = (result) => {
+  gameResult.value = result;
+  gamePhase.value = 'results';
+};
+
+// Return to main menu
+const returnToMenu = () => {
+  gamePhase.value = 'start';
+};
+
+// Start a new game
+const newGame = () => {
+  gamePhase.value = 'start';
+};
+</script>
+
+<template>
+  <div class="app-container">
+    <!-- Language Switcher (positioned differently on mobile vs desktop) -->
+    <div class="hidden sm:block absolute top-4 left-4 z-50">
+      <LanguageSwitcher />
+    </div>
+
+    <transition name="fade" mode="out-in" appear>
+      <!-- Start Screen -->
+      <StartScreen 
+        v-if="gamePhase === 'start'" 
+        @start-game="startGame" 
+        key="start"
+      />
+
+      <!-- Role Assignment -->
+      <RoleAssignment 
+        v-else-if="gamePhase === 'roles'" 
+        :players="players" 
+        :location="selectedLocation" 
+        @continue-to-game="continueToGame" 
+        key="roles"
+      />
+
+      <!-- Game Play -->
+      <GamePlay 
+        v-else-if="gamePhase === 'play'" 
+        :players="players" 
+        :location="selectedLocation" 
+        @game-over="handleGameOver"
+        @returnToMenu="returnToMenu" 
+        key="play"
+      />
+
+      <!-- Game Results -->
+      <GameResults 
+        v-else-if="gamePhase === 'results'" 
+        :result="gameResult" 
+        :location="selectedLocation" 
+        :players="players" 
+        @new-game="newGame" 
+        key="results"
+      />
+    </transition>
+  </div>
+</template>
+
+<style>
+.app-container {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
+}
+</style>

@@ -1,0 +1,228 @@
+/* Minimalist color palette for the spy game */
+:root {
+  /* Main color palette */
+  --color-black: #000000; /* Base color, gives strength and elegance */
+  --color-yellow: #FFD700; /* Main vibrant and energetic accent color */
+  --color-dark-gray: #2E2E2E; /* For intermediate tones, softens contrast */
+  --color-white: #F5F5F5; /* For empty spaces or light typography */
+  --color-mustard: #D4AF37; /* A more subdued yellow variation */
+  --color-steel-gray: #7A7A7A; /* Versatile complement for texture */
+
+  /* Legacy variables mapped to new colors */
+  --vt-c-white: var(--color-white);
+  --vt-c-white-soft: var(--color-white);
+  --vt-c-white-mute: var(--color-white);
+
+  --vt-c-black: var(--color-black);
+  --vt-c-black-soft: var(--color-dark-gray);
+  --vt-c-black-mute: var(--color-dark-gray);
+
+  --vt-c-indigo: var(--color-black);
+
+  --vt-c-divider-light-1: var(--color-steel-gray);
+  --vt-c-divider-light-2: rgba(122, 122, 122, 0.12);
+  --vt-c-divider-dark-1: var(--color-steel-gray);
+  --vt-c-divider-dark-2: rgba(122, 122, 122, 0.48);
+
+  --vt-c-text-light-1: var(--color-black);
+  --vt-c-text-light-2: var(--color-dark-gray);
+  --vt-c-text-dark-1: var(--color-white);
+  --vt-c-text-dark-2: var(--color-white);
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--color-black);
+  --color-background-soft: var(--color-dark-gray);
+  --color-background-mute: var(--color-dark-gray);
+
+  --color-border: var(--color-steel-gray);
+  --color-border-hover: var(--color-yellow);
+
+  --color-heading: var(--color-yellow);
+  --color-text: var(--color-white);
+
+  /* Accent colors */
+  --color-primary: var(--color-yellow);
+  --color-secondary: var(--color-mustard);
+  --color-accent: var(--color-steel-gray);
+
+  /* Component specific colors */
+  --color-button-primary: var(--color-yellow);
+  --color-button-primary-hover: var(--color-mustard);
+  --color-button-secondary: var(--color-dark-gray);
+  --color-button-secondary-hover: var(--color-steel-gray);
+  --color-button-danger: #FF4136; /* A bright red for danger actions */
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  --section-gap: 160px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  transition:
+    color var(--transition-normal),
+    background-color var(--transition-normal);
+  line-height: 1.6;
+  font-family:
+    'Poppins',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global transition classes */
+.fade-enter-active,
+.fade-leave-active,
+.fade-up-enter-active,
+.fade-up-leave-active,
+.fade-down-enter-active,
+.fade-down-leave-active,
+.fade-right-enter-active,
+.fade-right-leave-active,
+.fade-left-enter-active,
+.fade-left-leave-active,
+.slide-enter-active,
+.slide-leave-active,
+.slide-up-enter-active,
+.slide-up-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active,
+.scale-enter-active,
+.scale-leave-active {
+  transition: all var(--transition-normal);
+}
+
+/* Fade transitions */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Fade Up transitions */
+.fade-up-enter-from,
+.fade-up-leave-to {
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+/* Fade Down transitions */
+.fade-down-enter-from,
+.fade-down-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+/* Fade Right transitions */
+.fade-right-enter-from,
+.fade-right-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+/* Fade Left transitions */
+.fade-left-enter-from,
+.fade-left-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
+/* Slide transitions */
+.slide-enter-from {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+.slide-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
+/* Slide Up transitions */
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(30px);
+  opacity: 0;
+}
+
+/* Slide Right transitions */
+.slide-right-enter-from,
+.slide-right-leave-to {
+  transform: translateX(-30px);
+  opacity: 0;
+}
+
+/* Slide Left transitions */
+.slide-left-enter-from,
+.slide-left-leave-to {
+  transform: translateX(30px);
+  opacity: 0;
+}
+
+/* Scale transitions */
+.scale-enter-from,
+.scale-leave-to {
+  transform: scale(0.9);
+  opacity: 0;
+}
+
+/* List transitions */
+.list-enter-active,
+.list-leave-active {
+  transition: all var(--transition-normal);
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.list-move {
+  transition: transform var(--transition-normal);
+}
+
+/* Button transitions */
+button {
+  transition: 
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
