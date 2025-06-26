@@ -69,7 +69,7 @@ const currentPlayer = () => {
               <p class="text-2xl font-bold text-white" v-else>{{ t('regularPlayer') }}</p>
 
               <div v-if="!currentPlayer().isSpy" class="mt-4 pt-4 border-t border-steel-gray">
-                <h3 class="text-xl font-bold mb-2 text-mustard">{{ t('location') }}</h3>
+                <h3 class="text-xl font-bold mb-2 text-mustard">{{ t('word') }}</h3>
                 <p class="text-2xl font-bold text-white">{{ location }}</p>
               </div>
             </div>

@@ -765,6 +765,208 @@ export default {
             roles: ["Astronaut", "Scientist", "Engineer", "Doctor", "Commander"]
           }
         ]
+      },
+      {
+        id: "humor_negro",
+        name: "Dark Humor",
+        locations: [
+          {
+            name: "Murder",
+            roles: ["Victim", "Murderer", "Detective", "Witness", "Forensic"]
+          },
+          {
+            name: "Abortion",
+            roles: ["Doctor", "Patient", "Counselor", "Protester", "Nurse"]
+          },
+          {
+            name: "Necrophilia",
+            roles: ["Mortician", "Corpse", "Psychologist", "Police Officer", "Cemetery Worker"]
+          },
+          {
+            name: "Cannibalism",
+            roles: ["Cannibal", "Victim", "Survivor", "Tribe Member", "Anthropologist"]
+          },
+          {
+            name: "Incest",
+            roles: ["Family Member", "Therapist", "Geneticist", "Social Worker", "Lawyer"]
+          },
+          {
+            name: "Genocide",
+            roles: ["Dictator", "Victim", "Soldier", "Survivor", "War Crimes Prosecutor"]
+          },
+          {
+            name: "Pedophilia",
+            roles: ["Predator", "Victim", "Police Officer", "Psychologist", "Judge"]
+          },
+          {
+            name: "Terrorism",
+            roles: ["Terrorist", "Victim", "Counter-terrorism Agent", "Hostage", "Negotiator"]
+          },
+          {
+            name: "Rape",
+            roles: ["Victim", "Rapist", "Police Officer", "Counselor", "Lawyer"]
+          },
+          {
+            name: "Suicide",
+            roles: ["Depressed Person", "Therapist", "Family Member", "Hotline Operator", "Survivor"]
+          },
+          {
+            name: "AIDS",
+            roles: ["Patient", "Doctor", "Researcher", "Activist", "Nurse"]
+          },
+          {
+            name: "Holocaust",
+            roles: ["Victim", "Nazi", "Survivor", "Historian", "Liberator"]
+          },
+          {
+            name: "Euthanasia",
+            roles: ["Patient", "Doctor", "Family Member", "Ethicist", "Lawyer"]
+          },
+          {
+            name: "Poverty",
+            roles: ["Homeless Person", "Social Worker", "Charity Worker", "Politician", "Wealthy Person"]
+          },
+          {
+            name: "Disfigurement",
+            roles: ["Victim", "Doctor", "Therapist", "Family Member", "Stranger"]
+          },
+          {
+            name: "Mutilation",
+            roles: ["Victim", "Perpetrator", "Doctor", "Psychologist", "Witness"]
+          },
+          {
+            name: "Infanticide",
+            roles: ["Parent", "Baby", "Police Officer", "Psychologist", "Social Worker"]
+          },
+          {
+            name: "Abuse",
+            roles: ["Abuser", "Victim", "Counselor", "Police Officer", "Witness"]
+          },
+          {
+            name: "Paralysis",
+            roles: ["Patient", "Doctor", "Physical Therapist", "Family Member", "Researcher"]
+          },
+          {
+            name: "Torture",
+            roles: ["Torturer", "Victim", "Human Rights Activist", "Lawyer", "Witness"]
+          },
+          {
+            name: "Drug Trafficking",
+            roles: ["Drug Lord", "Dealer", "User", "DEA Agent", "Smuggler"]
+          },
+          {
+            name: "Zoophilia",
+            roles: ["Perpetrator", "Animal", "Veterinarian", "Police Officer", "Psychologist"]
+          },
+          {
+            name: "Slavery",
+            roles: ["Slave", "Slave Owner", "Abolitionist", "Historian", "Freedom Fighter"]
+          },
+          {
+            name: "Famine",
+            roles: ["Starving Person", "Aid Worker", "Dictator", "Farmer", "Doctor"]
+          },
+          {
+            name: "Madness",
+            roles: ["Patient", "Psychiatrist", "Family Member", "Nurse", "Therapist"]
+          },
+          {
+            name: "Depression",
+            roles: ["Depressed Person", "Therapist", "Family Member", "Friend", "Doctor"]
+          },
+          {
+            name: "Drug Addiction",
+            roles: ["Addict", "Dealer", "Rehab Counselor", "Family Member", "Doctor"]
+          },
+          {
+            name: "Terminal Illness",
+            roles: ["Patient", "Doctor", "Family Member", "Nurse", "Hospice Worker"]
+          },
+          {
+            name: "Mental Disorders",
+            roles: ["Patient", "Psychiatrist", "Family Member", "Researcher", "Therapist"]
+          },
+          {
+            name: "Schizophrenia",
+            roles: ["Patient", "Psychiatrist", "Family Member", "Researcher", "Voice in Head"]
+          },
+          {
+            name: "Abandonment",
+            roles: ["Abandoned Person", "Person Who Left", "Social Worker", "Therapist", "Foster Parent"]
+          },
+          {
+            name: "Cancer",
+            roles: ["Patient", "Doctor", "Family Member", "Researcher", "Survivor"]
+          },
+          {
+            name: "Orphanhood",
+            roles: ["Orphan", "Orphanage Worker", "Adoptive Parent", "Social Worker", "Deceased Parent"]
+          },
+          {
+            name: "Anorexia",
+            roles: ["Patient", "Therapist", "Family Member", "Nutritionist", "Friend"]
+          },
+          {
+            name: "Bullying",
+            roles: ["Bully", "Victim", "Teacher", "Parent", "Bystander"]
+          },
+          {
+            name: "Clerical Abuse",
+            roles: ["Priest", "Victim", "Church Official", "Lawyer", "Therapist"]
+          },
+          {
+            name: "Sadism",
+            roles: ["Sadist", "Victim", "Psychologist", "Police Officer", "Witness"]
+          },
+          {
+            name: "Racism",
+            roles: ["Racist", "Victim", "Activist", "Lawyer", "Witness"]
+          },
+          {
+            name: "Femicide",
+            roles: ["Victim", "Murderer", "Detective", "Family Member", "Activist"]
+          },
+          {
+            name: "Lynching",
+            roles: ["Victim", "Mob Member", "Witness", "Sheriff", "Family Member"]
+          },
+          {
+            name: "War Crimes",
+            roles: ["Perpetrator", "Victim", "Soldier", "War Crimes Prosecutor", "Witness"]
+          },
+          {
+            name: "School Shootings",
+            roles: ["Shooter", "Victim", "Teacher", "Police Officer", "Survivor"]
+          },
+          {
+            name: "Massacres",
+            roles: ["Perpetrator", "Victim", "Survivor", "First Responder", "Historian"]
+          },
+          {
+            name: "Self-harm",
+            roles: ["Person Self-harming", "Therapist", "Family Member", "Friend", "Doctor"]
+          },
+          {
+            name: "Incineration",
+            roles: ["Victim", "Perpetrator", "Firefighter", "Witness", "Investigator"]
+          },
+          {
+            name: "Exorcism",
+            roles: ["Possessed Person", "Exorcist", "Family Member", "Doctor", "Demon"]
+          },
+          {
+            name: "Concentration Camps",
+            roles: ["Prisoner", "Guard", "Commandant", "Liberator", "Survivor"]
+          },
+          {
+            name: "Blindness",
+            roles: ["Blind Person", "Doctor", "Guide Dog", "Family Member", "Mobility Instructor"]
+          },
+          {
+            name: "Malnutrition",
+            roles: ["Starving Person", "Doctor", "Aid Worker", "Nutritionist", "Parent"]
+          }
+        ]
       }
     ]
   },
@@ -1527,6 +1729,208 @@ export default {
           {
             name: "Estación espacial",
             roles: ["Astronauta", "Científico", "Ingeniero", "Médico", "Comandante"]
+          }
+        ]
+      },
+      {
+        id: "humor_negro",
+        name: "Humor Negro",
+        locations: [
+          {
+            name: "Asesinato",
+            roles: ["Víctima", "Asesino", "Detective", "Testigo", "Forense"]
+          },
+          {
+            name: "Aborto",
+            roles: ["Doctor", "Paciente", "Consejero", "Manifestante", "Enfermera"]
+          },
+          {
+            name: "Necrofilia",
+            roles: ["Empleado de funeraria", "Cadáver", "Psicólogo", "Oficial de policía", "Trabajador de cementerio"]
+          },
+          {
+            name: "Canibalismo",
+            roles: ["Caníbal", "Víctima", "Superviviente", "Miembro de tribu", "Antropólogo"]
+          },
+          {
+            name: "Incesto",
+            roles: ["Miembro de familia", "Terapeuta", "Genetista", "Trabajador social", "Abogado"]
+          },
+          {
+            name: "Genocidio",
+            roles: ["Dictador", "Víctima", "Soldado", "Superviviente", "Fiscal de crímenes de guerra"]
+          },
+          {
+            name: "Pedofilia",
+            roles: ["Depredador", "Víctima", "Oficial de policía", "Psicólogo", "Juez"]
+          },
+          {
+            name: "Terrorismo",
+            roles: ["Terrorista", "Víctima", "Agente antiterrorista", "Rehén", "Negociador"]
+          },
+          {
+            name: "Violación",
+            roles: ["Víctima", "Violador", "Oficial de policía", "Consejero", "Abogado"]
+          },
+          {
+            name: "Suicidio",
+            roles: ["Persona deprimida", "Terapeuta", "Familiar", "Operador de línea de ayuda", "Superviviente"]
+          },
+          {
+            name: "Sida",
+            roles: ["Paciente", "Doctor", "Investigador", "Activista", "Enfermera"]
+          },
+          {
+            name: "Holocausto",
+            roles: ["Víctima", "Nazi", "Superviviente", "Historiador", "Liberador"]
+          },
+          {
+            name: "Eutanasia",
+            roles: ["Paciente", "Doctor", "Familiar", "Especialista en ética", "Abogado"]
+          },
+          {
+            name: "Pobreza",
+            roles: ["Persona sin hogar", "Trabajador social", "Trabajador de caridad", "Político", "Persona adinerada"]
+          },
+          {
+            name: "Desfiguración",
+            roles: ["Víctima", "Doctor", "Terapeuta", "Familiar", "Extraño"]
+          },
+          {
+            name: "Mutilación",
+            roles: ["Víctima", "Perpetrador", "Doctor", "Psicólogo", "Testigo"]
+          },
+          {
+            name: "Infanticidio",
+            roles: ["Padre/Madre", "Bebé", "Oficial de policía", "Psicólogo", "Trabajador social"]
+          },
+          {
+            name: "Abuso",
+            roles: ["Abusador", "Víctima", "Consejero", "Oficial de policía", "Testigo"]
+          },
+          {
+            name: "Parálisis",
+            roles: ["Paciente", "Doctor", "Fisioterapeuta", "Familiar", "Investigador"]
+          },
+          {
+            name: "Tortura",
+            roles: ["Torturador", "Víctima", "Activista de derechos humanos", "Abogado", "Testigo"]
+          },
+          {
+            name: "Narcotráfico",
+            roles: ["Narcotraficante", "Distribuidor", "Consumidor", "Agente de la DEA", "Contrabandista"]
+          },
+          {
+            name: "Zoofilia",
+            roles: ["Perpetrador", "Animal", "Veterinario", "Oficial de policía", "Psicólogo"]
+          },
+          {
+            name: "Esclavitud",
+            roles: ["Esclavo", "Dueño de esclavos", "Abolicionista", "Historiador", "Luchador por la libertad"]
+          },
+          {
+            name: "Hambruna",
+            roles: ["Persona hambrienta", "Trabajador humanitario", "Dictador", "Granjero", "Doctor"]
+          },
+          {
+            name: "Locura",
+            roles: ["Paciente", "Psiquiatra", "Familiar", "Enfermera", "Terapeuta"]
+          },
+          {
+            name: "Depresión",
+            roles: ["Persona deprimida", "Terapeuta", "Familiar", "Amigo", "Doctor"]
+          },
+          {
+            name: "Drogadicción",
+            roles: ["Adicto", "Traficante", "Consejero de rehabilitación", "Familiar", "Doctor"]
+          },
+          {
+            name: "Enfermedad terminal",
+            roles: ["Paciente", "Doctor", "Familiar", "Enfermera", "Trabajador de hospicio"]
+          },
+          {
+            name: "Trastornos mentales",
+            roles: ["Paciente", "Psiquiatra", "Familiar", "Investigador", "Terapeuta"]
+          },
+          {
+            name: "Esquizofrenia",
+            roles: ["Paciente", "Psiquiatra", "Familiar", "Investigador", "Voz en la cabeza"]
+          },
+          {
+            name: "Abandono",
+            roles: ["Persona abandonada", "Persona que abandonó", "Trabajador social", "Terapeuta", "Padre adoptivo"]
+          },
+          {
+            name: "Cáncer",
+            roles: ["Paciente", "Doctor", "Familiar", "Investigador", "Superviviente"]
+          },
+          {
+            name: "Orfandad",
+            roles: ["Huérfano", "Trabajador de orfanato", "Padre adoptivo", "Trabajador social", "Padre fallecido"]
+          },
+          {
+            name: "Anorexia",
+            roles: ["Paciente", "Terapeuta", "Familiar", "Nutricionista", "Amigo"]
+          },
+          {
+            name: "Bullying",
+            roles: ["Acosador", "Víctima", "Profesor", "Padre", "Espectador"]
+          },
+          {
+            name: "Pederastia clerical",
+            roles: ["Sacerdote", "Víctima", "Oficial de la iglesia", "Abogado", "Terapeuta"]
+          },
+          {
+            name: "Sadismo",
+            roles: ["Sádico", "Víctima", "Psicólogo", "Oficial de policía", "Testigo"]
+          },
+          {
+            name: "Racismo",
+            roles: ["Racista", "Víctima", "Activista", "Abogado", "Testigo"]
+          },
+          {
+            name: "Feminicidio",
+            roles: ["Víctima", "Asesino", "Detective", "Familiar", "Activista"]
+          },
+          {
+            name: "Linchamiento",
+            roles: ["Víctima", "Miembro de la turba", "Testigo", "Sheriff", "Familiar"]
+          },
+          {
+            name: "Crímenes de guerra",
+            roles: ["Perpetrador", "Víctima", "Soldado", "Fiscal de crímenes de guerra", "Testigo"]
+          },
+          {
+            name: "Tiroteos escolares",
+            roles: ["Tirador", "Víctima", "Profesor", "Oficial de policía", "Superviviente"]
+          },
+          {
+            name: "Masacres",
+            roles: ["Perpetrador", "Víctima", "Superviviente", "Primer respondiente", "Historiador"]
+          },
+          {
+            name: "Autolesiones",
+            roles: ["Persona autolesionándose", "Terapeuta", "Familiar", "Amigo", "Doctor"]
+          },
+          {
+            name: "Incineración",
+            roles: ["Víctima", "Perpetrador", "Bombero", "Testigo", "Investigador"]
+          },
+          {
+            name: "Exorcismo",
+            roles: ["Persona poseída", "Exorcista", "Familiar", "Doctor", "Demonio"]
+          },
+          {
+            name: "Campos de concentración",
+            roles: ["Prisionero", "Guardia", "Comandante", "Liberador", "Superviviente"]
+          },
+          {
+            name: "Ceguera",
+            roles: ["Persona ciega", "Doctor", "Perro guía", "Familiar", "Instructor de movilidad"]
+          },
+          {
+            name: "Desnutrición",
+            roles: ["Persona desnutrida", "Doctor", "Trabajador humanitario", "Nutricionista", "Padre/Madre"]
           }
         ]
       }

@@ -38,6 +38,7 @@ export default {
   regularObjective: 'You know the location. Your objective is to identify the spies without revealing too much information about the location.',
   nextPlayer: 'Next Player',
   startGameButton: 'Start Game',
+  word: 'Word:',
 
   // GamePlay.vue
   gameMenu: 'Game Menu',

@@ -64,18 +64,21 @@ const startGame = (gameSettings) => {
   // Get locations based on selected categories
   let availableLocations = [];
 
-  // If 'all' is included, use all locations
-  if (categoryIds.includes('all')) {
-    availableLocations = locationsData.getAllLocations(locale.value);
-  } else {
-    // Otherwise, combine locations from all selected categories
-    categoryIds.forEach(categoryId => {
-      const category = locationsData[locale.value].categories.find(cat => cat.id === categoryId);
-      if (category) {
-        availableLocations = availableLocations.concat(category.locations);
-      }
-    });
-  }
+  // Get categories to use (all categories except 'all')
+  const categoriesToUse = categoryIds.includes('all') 
+    ? locationsData[locale.value].categories.map(cat => cat.id) 
+    : categoryIds;
+
+  // Combine locations from all selected categories
+  categoriesToUse.forEach(categoryId => {
+    // Skip the 'all' category as it's not a real category
+    if (categoryId === 'all') return;
+
+    const category = locationsData[locale.value].categories.find(cat => cat.id === categoryId);
+    if (category) {
+      availableLocations = availableLocations.concat(category.locations);
+    }
+  });
 
   // If no locations are available (shouldn't happen with our UI logic), use all locations
   if (availableLocations.length === 0) {
@@ -155,6 +158,10 @@ const newGame = () => {
         key="results"
       />
     </transition>
+    <!-- Footer -->
+    <div class="absolute bottom-0 w-full py-2 text-center text-steel-gray text-sm bg-transparent">
+      <p>&copy; 2025 Antonio Salinas</p>
+    </div>
   </div>
 </template>
 
@@ -166,5 +173,7 @@ const newGame = () => {
   color: var(--color-text);
   transition: background-color var(--transition-normal), color var(--transition-normal);
   overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
+  position: relative; /* For absolute positioning of footer */
+  padding-bottom: 2rem; /* Space for footer */
 }
 </style>

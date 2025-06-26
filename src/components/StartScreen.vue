@@ -9,7 +9,7 @@ const { t, locale } = useI18n();
 
 const playerCount = ref(3); // Default minimum player count
 const minPlayers = 3;
-const maxPlayers = 10;
+const maxPlayers = 15;
 
 // Multiple spies option
 const multipleSpies = ref(false); // Default to single spy
