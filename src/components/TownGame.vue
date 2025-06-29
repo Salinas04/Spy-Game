@@ -43,9 +43,25 @@ const synth = window.speechSynthesis;
 const speakingNow = ref(false);
 const voicesLoaded = ref(false);
 const voices = ref([]);
+const isMobile = ref(false);
 
-// Load voices when they are available
+// Check if device is mobile
 onMounted(() => {
+  // Simple mobile detection
+  isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  // iOS requires user interaction before speech synthesis can work
+  if (isMobile.value && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // We'll initialize speech synthesis on first user interaction
+    document.addEventListener('touchstart', initSpeechSynthesis, { once: true });
+  } else {
+    // For non-iOS devices, initialize immediately
+    initSpeechSynthesis();
+  }
+});
+
+// Initialize speech synthesis
+const initSpeechSynthesis = () => {
   // Check if voices are already loaded
   const availableVoices = synth.getVoices();
   if (availableVoices.length > 0) {
@@ -58,7 +74,15 @@ onMounted(() => {
     voices.value = synth.getVoices();
     voicesLoaded.value = true;
   };
-});
+
+  // On iOS, we need to speak something to initialize the speech synthesis
+  if (isMobile.value && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // Speak an empty string to initialize
+    const utterance = new SpeechSynthesisUtterance('');
+    utterance.volume = 0; // Mute it
+    synth.speak(utterance);
+  }
+};
 
 // Narrate text using a specific voice
 const narrar = (text, voz) => {
@@ -71,14 +95,37 @@ const narrar = (text, voz) => {
   const utterance = new SpeechSynthesisUtterance(text);
 
   // Set language based on current i18n locale
-  utterance.lang = locale.value === 'es' ? 'es-ES' : 'en-US';
+  const langCode = locale.value === 'es' ? 'es-ES' : 'en-US';
+  utterance.lang = langCode;
 
-  // Set voice if provided
+  // Voice selection logic
   if (voz) {
+    // Use provided voice if available
     utterance.voice = voz;
+  } else if (voicesLoaded.value && voices.value.length > 0) {
+    // Try to find a suitable voice based on device and language
+    let selectedVoice = null;
+
+    // First priority: Google voice in the correct language
+    selectedVoice = voices.value.find(v => 
+      v.name.includes("Google") && 
+      v.lang.startsWith(langCode.split('-')[0])
+    );
+
+    // Second priority: Any voice in the correct language
+    if (!selectedVoice) {
+      selectedVoice = voices.value.find(v => 
+        v.lang.startsWith(langCode.split('-')[0])
+      );
+    }
+
+    // Use the selected voice if found
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
   }
 
-  // Modify voice characteristics
+  // Modify voice characteristics - adjusted for better mobile compatibility
   utterance.pitch = 0.5;  // Deeper voice (0.1 to 2)
   utterance.rate = 0.8;   // Slower (0.1 to 10)
   utterance.volume = 1.0; // Full volume (0 to 1)
@@ -91,31 +138,60 @@ const narrar = (text, voz) => {
     speakingNow.value = false;
   };
 
+  // Add error handler
+  utterance.onerror = (event) => {
+    console.error('Speech synthesis error:', event);
+    speakingNow.value = false;
+  };
+
   // Speak the text
   synth.speak(utterance);
 };
 
 // Speak text using speech synthesis
 const speakText = (text) => {
-  if (!voicesLoaded.value) {
-    // If voices are not loaded yet, just use the default voice
+  // For mobile devices, we might need to initialize speech synthesis first
+  if (isMobile.value && !voicesLoaded.value) {
+    // Try to initialize speech synthesis
+    initSpeechSynthesis();
+
+    // If still not loaded, use default voice
     narrar(text, null);
     return;
   }
 
-  // Try to find a Google Spanish voice
-  const voz = voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES");
+  // For non-mobile or if voices are loaded
+  if (voicesLoaded.value) {
+    // Try to find a Google Spanish voice
+    const voz = voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES");
 
-  // Use the Google voice if found, otherwise use default
-  narrar(text, voz);
+    // Use the Google voice if found, otherwise let narrar function handle fallbacks
+    narrar(text, voz);
+  } else {
+    // If voices not loaded, use default voice
+    narrar(text, null);
+  }
 };
 
 // Toggle speech
 const toggleSpeech = () => {
+  // This is a good opportunity to initialize speech synthesis on mobile
+  if (isMobile.value && !voicesLoaded.value) {
+    initSpeechSynthesis();
+  }
+
   isSpeechEnabled.value = !isSpeechEnabled.value;
+
   if (!isSpeechEnabled.value) {
+    // Cancel any ongoing speech
     synth.cancel();
     speakingNow.value = false;
+  } else if (isMobile.value) {
+    // On mobile, when enabling speech, speak a silent utterance to initialize
+    // This helps with iOS requiring user interaction
+    const utterance = new SpeechSynthesisUtterance('');
+    utterance.volume = 0;
+    synth.speak(utterance);
   }
 };
 
@@ -512,21 +588,31 @@ const returnToMainMenu = () => {
   <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[#121212] to-[#1A1A2E] p-2 sm:p-4">
     <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-8 text-center text-white">{{ t('townGame') }}</h1>
 
-    <!-- Speech toggle button -->
+    <!-- Speech toggle button - Enhanced for mobile -->
     <div class="absolute top-4 right-4 z-10">
       <button 
         @click="toggleSpeech" 
-        class="bg-[#2A2A3F] hover:bg-[#35364A] text-white p-2 rounded-full transition-all"
-        :class="{ 'bg-[#4B61FF]': isSpeechEnabled }"
+        class="bg-[#2A2A3F] hover:bg-[#35364A] text-white p-2 sm:p-2 rounded-full transition-all shadow-md active:shadow-inner"
+        :class="{ 
+          'bg-[#4B61FF]': isSpeechEnabled,
+          'p-3': isMobile, // Larger touch target on mobile
+          'active:bg-[#3A51DF]': isMobile // Visual feedback on mobile
+        }"
         title="Toggle narrator voice"
+        aria-label="Toggle narrator voice"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-6 sm:w-6" :class="{ 'h-7 w-7': isMobile }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path v-if="isSpeechEnabled" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
           <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
         </svg>
       </button>
-      <div v-if="speakingNow" class="mt-2 bg-[#4B61FF]/20 p-1 rounded-full flex items-center justify-center">
-        <div class="animate-pulse h-2 w-2 bg-[#4B61FF] rounded-full"></div>
+      <!-- Speaking indicator with enhanced visibility -->
+      <div v-if="speakingNow" class="mt-2 bg-[#4B61FF]/30 p-1 sm:p-1 rounded-full flex items-center justify-center" :class="{ 'p-2': isMobile }">
+        <div class="animate-pulse h-2 w-2 sm:h-2 sm:w-2 bg-[#4B61FF] rounded-full" :class="{ 'h-3 w-3': isMobile }"></div>
+      </div>
+      <!-- Mobile-specific indicator for speech status -->
+      <div v-if="isMobile" class="mt-1 text-xs text-center text-[#A0A0B8]">
+        {{ isSpeechEnabled ? 'Narrador ON' : 'Narrador OFF' }}
       </div>
     </div>
 
