@@ -120,6 +120,13 @@ onMounted(() => {
           >
             <span>{{ t('wordGuessingGame') }}</span>
           </button>
+
+          <button
+            @click="selectGame('townGame')"
+            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-4 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center mt-4"
+          >
+            <span>{{ t('townGame') }} (BETA)</span>
+          </button>
         </div>
       </transition>
 

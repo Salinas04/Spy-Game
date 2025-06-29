@@ -15,6 +15,7 @@ const teamWords = ref({
 });
 const currentTeamIndex = ref(0); // Team currently entering words
 const currentWord = ref('');
+const hideWords = ref(false); // Whether to hide the words that are already added
 
 // Computed properties
 const currentTeamName = computed(() => teamNames.value[currentTeamIndex.value]);
@@ -271,9 +272,17 @@ const goToMainMenu = () => {
             </button>
           </div>
 
-          <p class="text-sm mb-4 text-[var(--color-text-secondary)]">
-            {{ t('wordsRemaining', { count: maxWordsPerTeam - teamWords[currentTeamIndex].length }) }}
-          </p>
+          <div class="flex justify-between items-center mb-4">
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              {{ t('wordsRemaining', { count: maxWordsPerTeam - teamWords[currentTeamIndex].length }) }}
+            </p>
+            <button 
+              @click="hideWords = !hideWords" 
+              class="text-sm bg-[var(--color-background-soft)] hover:bg-[var(--color-button-primary)]/20 text-[var(--color-text)] px-3 py-1 rounded-lg transition-all border border-[var(--color-border)]"
+            >
+              {{ hideWords ? t('showWords') : t('hideWords') }}
+            </button>
+          </div>
 
           <!-- Words List -->
           <div class="bg-[var(--color-background-soft)]/70 rounded-lg p-4 border border-[var(--color-border)] max-h-60 overflow-y-auto">
@@ -283,7 +292,7 @@ const goToMainMenu = () => {
                 :key="word"
                 class="flex justify-between items-center mb-2 last:mb-0 transition-all duration-300"
               >
-                <span>{{ word }}</span>
+                <span>{{ hideWords ? '••••••••' : word }}</span>
                 <button 
                   @click="removeWord(currentTeamIndex, wordIndex)"
                   class="text-[var(--color-button-primary-hover)] hover:text-[var(--color-text-highlight)] transition-colors"
@@ -301,14 +310,14 @@ const goToMainMenu = () => {
           <div class="flex justify-between mt-4 space-x-2 sm:space-x-4" v-if="teamCount > 1">
             <button 
               @click="currentTeamIndex = Math.max(0, currentTeamIndex - 1)"
-              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
+              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
               :disabled="currentTeamIndex === 0"
             >
               {{ t('previousTeam') }}
             </button>
             <button 
               @click="currentTeamIndex = Math.min(teamCount - 1, currentTeamIndex + 1)"
-              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
+              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
               :disabled="currentTeamIndex === teamCount - 1"
             >
               {{ t('nextTeam') }}
@@ -330,7 +339,7 @@ const goToMainMenu = () => {
 
           <button
             @click="goToMainMenu"
-            class="w-full bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all"
+            class="w-full bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all"
           >
             {{ t('returnToMainMenu') }}
           </button>

@@ -8,6 +8,8 @@ import GamePlay from './components/GamePlay.vue';
 import GameResults from './components/GameResults.vue';
 import WordGuessingSetup from './components/WordGuessingSetup.vue';
 import WordGuessingGame from './components/WordGuessingGame.vue';
+import TownGameSetup from './components/TownGameSetup.vue';
+import TownGame from './components/TownGame.vue';
 import LanguageSwitcher from './components/LanguageSwitcher.vue';
 import locationsData from './i18n/locations.js';
 
@@ -15,7 +17,7 @@ import locationsData from './i18n/locations.js';
 const { locale } = useI18n();
 
 // App state
-const selectedGame = ref(null); // 'spy' or 'wordGuessing' or null (main menu)
+const selectedGame = ref(null); // 'spy' or 'wordGuessing' or 'townGame' or null (main menu)
 
 // Function to update theme color meta tag
 const updateThemeColor = (game) => {
@@ -25,6 +27,8 @@ const updateThemeColor = (game) => {
       metaThemeColor.setAttribute('content', '#000000'); // Black for spy game
     } else if (game === 'wordGuessing') {
       metaThemeColor.setAttribute('content', '#FFF8E7'); // Light beige for word guessing game
+    } else if (game === 'townGame') {
+      metaThemeColor.setAttribute('content', '#121212'); // Dark theme for town game
     } else {
       metaThemeColor.setAttribute('content', '#1E1E2F'); // Dark blue for main menu
     }
@@ -47,11 +51,18 @@ const players = ref([]);
 const selectedLocation = ref(null);
 const gameResult = ref(null);
 const selectedCategory = ref(null);
+const spyOption = ref('single');
+const spyCount = ref(1);
 
 // Word Guessing Game state
 const wordGuessingPhase = ref('setup'); // 'setup', 'play', 'results'
 const wordGuessingSettings = ref(null);
 const wordGuessingResult = ref(null);
+
+// Town Game state
+const townGamePhase = ref('setup'); // 'setup', 'play', 'results'
+const townGameSettings = ref(null);
+const townGameResult = ref(null);
 
 // Handle game selection from main menu
 const handleSelectGame = (gameType) => {
@@ -62,6 +73,10 @@ const handleSelectGame = (gameType) => {
     wordGuessingPhase.value = 'setup';
     wordGuessingSettings.value = null;
     wordGuessingResult.value = null;
+  } else if (gameType === 'townGame') {
+    townGamePhase.value = 'setup';
+    townGameSettings.value = null;
+    townGameResult.value = null;
   }
 };
 
@@ -76,6 +91,17 @@ const handleWordGuessingGameOver = (result) => {
   wordGuessingPhase.value = 'results';
 };
 
+// Town Game handlers
+const startTownGame = (settings) => {
+  townGameSettings.value = settings;
+  townGamePhase.value = 'play';
+};
+
+const handleTownGameOver = (result) => {
+  townGameResult.value = result;
+  townGamePhase.value = 'results';
+};
+
 // Start a new game with the specified settings
 const startGame = (gameSettings) => {
   // Reset game state
@@ -85,6 +111,9 @@ const startGame = (gameSettings) => {
   const playerCount = gameSettings.playerCount;
   const categoryIds = gameSettings.categoryIds;
   selectedCategory.value = categoryIds; // Now storing an array of category IDs
+
+  // Store spy options
+  spyOption.value = gameSettings.spyOption;
 
   // Create player objects
   for (let i = 0; i < playerCount; i++) {
@@ -104,19 +133,22 @@ const startGame = (gameSettings) => {
 
   // Calculate the maximum number of spies (playerCount - 2) to ensure at least 2 non-spy players
   const maxSpies = playerCount - 2;
-  let spyCount = 1; // Default to 1 spy
+  let spiesCount = 1; // Default to 1 spy
 
   if (gameSettings.spyOption === 'random') {
     // Randomly determine the number of spies between 1 and maxSpies
-    spyCount = Math.floor(Math.random() * maxSpies) + 1;
+    spiesCount = Math.floor(Math.random() * maxSpies) + 1;
   } else if (gameSettings.spyOption === 'custom') {
     // Use the custom spies count, but ensure it doesn't exceed maxSpies
-    spyCount = Math.min(gameSettings.customSpiesCount, maxSpies);
+    spiesCount = Math.min(gameSettings.customSpiesCount, maxSpies);
   }
-  // For 'single' option, spyCount remains 1
+  // For 'single' option, spiesCount remains 1
 
-  // Assign the first spyCount indices as spies
-  for (let i = 0; i < spyCount; i++) {
+  // Store the spy count
+  spyCount.value = spiesCount;
+
+  // Assign the first spiesCount indices as spies
+  for (let i = 0; i < spiesCount; i++) {
     players.value[indices[i]].isSpy = true;
   }
 
@@ -180,7 +212,7 @@ const returnToMainMenu = () => {
 </script>
 
 <template>
-  <div class="app-container" :class="{ 'menu-theme': selectedGame === null, 'spy-theme': selectedGame === 'spy', 'word-guessing-theme': selectedGame === 'wordGuessing' }">
+  <div class="app-container" :class="{ 'menu-theme': selectedGame === null, 'spy-theme': selectedGame === 'spy', 'word-guessing-theme': selectedGame === 'wordGuessing', 'town-game-theme': selectedGame === 'townGame' }">
     <!-- Language Switcher (positioned differently on mobile vs desktop) -->
     <div class="hidden sm:block absolute top-4 left-4 z-50" v-if="selectedGame !== null">
       <LanguageSwitcher />
@@ -218,6 +250,8 @@ const returnToMainMenu = () => {
           v-else-if="gamePhase === 'play'" 
           :players="players" 
           :location="selectedLocation" 
+          :spyOption="spyOption"
+          :spyCount="spyCount"
           @game-over="handleGameOver"
           @returnToMenu="returnToMenu" 
           key="spy-play"
@@ -252,6 +286,28 @@ const returnToMainMenu = () => {
           @gameOver="handleWordGuessingGameOver"
           @returnToMainMenu="returnToMainMenu"
           key="word-guessing-play"
+        />
+
+        <!-- Results Phase (handled within the game component) -->
+      </template>
+
+      <!-- Town Game (El Pueblo Duerme) -->
+      <template v-else-if="selectedGame === 'townGame'">
+        <!-- Setup Phase -->
+        <TownGameSetup 
+          v-if="townGamePhase === 'setup'" 
+          @startGame="startTownGame" 
+          @returnToMainMenu="returnToMainMenu"
+          key="town-game-setup"
+        />
+
+        <!-- Play Phase -->
+        <TownGame 
+          v-else-if="townGamePhase === 'play' || townGamePhase === 'results'" 
+          :gameSettings="townGameSettings" 
+          @gameOver="handleTownGameOver"
+          @returnToMainMenu="returnToMainMenu"
+          key="town-game-play"
         />
 
         <!-- Results Phase (handled within the game component) -->
@@ -320,6 +376,29 @@ const returnToMainMenu = () => {
   --color-background-soft: #F9F2E0; /* slightly darker than background */
   --color-background-mute: #F9F2E0;
   --color-steel-gray: #8D8FA1; /* muted version of text color */
+  --color-yellow: var(--color-button-primary);
+  --color-mustard: var(--color-button-primary-hover);
+}
+
+/* Town Game Theme - Misterioso, nocturno y envolvente */
+.town-game-theme {
+  --color-background: #121212; /* fondo oscuro */
+  --color-text: #FFFFFF; /* texto blanco */
+  --color-text-secondary: #A0A0B8; /* gris claro azulado */
+  --color-button-primary: #4B61FF; /* azul eléctrico */
+  --color-button-primary-hover: #6879FF; /* azul más claro */
+  --color-button-text: #FFFFFF; /* blanco */
+  --color-border: #35364A; /* azul grisáceo oscuro */
+  --color-accent-red: #FF4E4E; /* rojo para el asesino */
+
+  /* Update semantic colors */
+  --color-heading: var(--color-text);
+  --color-primary: var(--color-button-primary);
+  --color-secondary: var(--color-button-primary-hover);
+  --color-accent: var(--color-accent-red);
+  --color-background-soft: #1A1A2E; /* slightly lighter than background */
+  --color-background-mute: #2A2A3F;
+  --color-steel-gray: var(--color-text-secondary);
   --color-yellow: var(--color-button-primary);
   --color-mustard: var(--color-button-primary-hover);
 }

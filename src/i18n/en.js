@@ -7,6 +7,7 @@ export default {
   selectGame: 'Select a Game',
   spyGame: 'The Spy Game',
   wordGuessingGame: 'Word Guessing Game',
+  townGame: 'The Town Sleeps',
   returnToMainMenu: 'Return to Main Menu',
 
   // Common
@@ -60,8 +61,10 @@ export default {
   timer: 'Timer',
   pauseTimer: 'Pause Timer',
   resumeTimer: 'Resume Timer',
+  restartTimer: 'Restart Timer',
   endGame: 'End Game',
   gameDiscussion: 'Discuss and discover who are the spies before time runs out.',
+  spyCount: 'Number of spies in this game: {count}',
   gameFinished: 'Game finished',
 
   // GameResults.vue
@@ -84,6 +87,8 @@ export default {
   noWordsYet: 'No words added yet',
   previousTeam: 'Previous Team',
   nextTeam: 'Next Team',
+  hideWords: 'Hide Words',
+  showWords: 'Show Words',
 
   // WordGuessingGame.vue
   teamTurn: '{team}\'s Turn',
@@ -94,6 +99,77 @@ export default {
   incorrectGuess: 'Incorrect',
   teamWins: '{team} Wins!',
   finalScores: 'Final Scores:',
+
+  // Town Game
+  playerSetup: 'Player Setup',
+  roleSetup: 'Role Setup',
+  requiredRoles: 'Required Roles',
+  optionalRoles: 'Optional Roles',
+  villagerRole: 'Villager',
+  assassinRole: 'Assassin',
+  doctorRole: 'Doctor',
+  seerRole: 'Seer',
+  cupidRole: 'Cupid',
+  witchRole: 'Witch',
+  villagerDescription: 'You are a villager. Your objective is to identify and eliminate the assassins.',
+  assassinDescription: 'You are an assassin. Your objective is to eliminate the villagers without being discovered.',
+  doctorDescription: 'You are a doctor. Each night, you can save one person from being killed.',
+  seerDescription: 'You are a seer. Each night, you can discover the role of one player.',
+  cupidDescription: 'You are cupid. You can link two players together in love.',
+  witchDescription: 'You are a witch. You have potions to save or kill players.',
+
+  roleAssignment: 'Role Assignment',
+  startNight: 'Start Night Phase',
+  nightPhase: 'Night Phase',
+  nightDescription: 'The town sleeps. Special roles will perform their actions.',
+  narratorAssassin: 'The Assassin wakes up and chooses a victim...',
+  narratorDoctor: 'The Doctor wakes up and chooses someone to save...',
+  narratorSeer: 'The Seer wakes up and chooses someone to investigate...',
+  narratorSeerResult: 'The Seer learns the truth about the chosen player...',
+  preNightAnnouncement: 'Everyone close your eyes, the town sleeps...',
+  assassinTurn: 'Assassin\'s Turn',
+  assassinPrompt: 'Choose a player to eliminate:',
+  doctorTurn: 'Doctor\'s Turn',
+  doctorPrompt: 'Choose a player to save:',
+  seerTurn: 'Seer\'s Turn',
+  seerPrompt: 'Choose a player to investigate:',
+  continue: 'Continue',
+
+  dayPhase: 'Day Phase',
+  dayDescription: 'The town wakes up. See what happened during the night.',
+  nightEvents: 'Night Events',
+  playerKilled: '{player} was killed during the night.',
+  playerSaved: '{player} was targeted but saved by the doctor.',
+  peacefulNight: 'It was a peaceful night. No one was killed.',
+  seerInfo: 'Seer Information',
+  seerReveal: '{player} is a {role}.',
+
+  startDiscussion: 'Start Discussion',
+  discussionPhase: 'Discussion Phase',
+  discussionDescription: 'Discuss who might be the assassin. You have 5 minutes.',
+  alivePlayers: 'Alive Players',
+
+  startVoting: 'Start Voting',
+  votingPhase: 'Voting Phase',
+  votingDescription: 'Vote for who you think is the assassin.',
+  votes: 'votes for:',
+
+  votingResultsPhase: 'Voting Results',
+  votingResultsDescription: 'Here are the results of the voting. The player with the most votes will be eliminated.',
+  votingResults: 'Voting Results',
+  votesReceived: 'votes received',
+  playerEliminated: '{player} has been eliminated!',
+  continueToNextRound: 'Continue to Next Round',
+
+  gameOver: 'Game Over',
+  assassinsWin: 'The Assassins Win!',
+  villagersWin: 'The Villagers Win!',
+  playerRoles: 'Player Roles',
+
+  townGameHowToPlay1: 'Players are assigned secret roles: Villagers, Assassin, Doctor, Seer, etc.',
+  townGameHowToPlay2: 'During the night, special roles perform actions (kill, save, investigate).',
+  townGameHowToPlay3: 'During the day, players discuss and vote to eliminate a suspected assassin.',
+  townGameHowToPlay4: 'Villagers win if all assassins are eliminated. Assassins win if they equal or outnumber the villagers.',
 
   // Categories
   categories_list: {

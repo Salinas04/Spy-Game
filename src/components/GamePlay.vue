@@ -10,6 +10,14 @@ const props = defineProps({
   location: {
     type: String,
     required: true
+  },
+  spyOption: {
+    type: String,
+    required: true
+  },
+  spyCount: {
+    type: Number,
+    required: true
   }
 });
 
@@ -132,8 +140,11 @@ startTimer();
         </button>
       </div>
 
-      <div class="mt-6 text-center text-steel-gray">
-        <p>{{ t('gameDiscussion') }}</p>
+      <div class="mt-6 text-center">
+        <p class="text-steel-gray">{{ t('gameDiscussion') }}</p>
+        <p v-if="spyOption === 'random'" class="mt-2 text-yellow font-semibold">
+          {{ t('spyCount', { count: spyCount }) }}
+        </p>
       </div>
     </div>
   </div>

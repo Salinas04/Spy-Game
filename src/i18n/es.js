@@ -7,6 +7,7 @@ export default {
   selectGame: 'Selecciona un Juego',
   spyGame: 'El Juego del Espía',
   wordGuessingGame: 'Juego de Adivinar Palabras',
+  townGame: 'El Pueblo Duerme',
   returnToMainMenu: 'Volver al Menú Principal',
 
   // Common
@@ -60,8 +61,10 @@ export default {
   timer: 'Temporizador',
   pauseTimer: 'Pausar Temporizador',
   resumeTimer: 'Reanudar Temporizador',
+  restartTimer: 'Reiniciar Temporizador',
   endGame: 'Finalizar Juego',
   gameDiscussion: 'Discutan y descubran quiénes son los espías antes de que se acabe el tiempo.',
+  spyCount: 'Número de espías en este juego: {count}',
   gameFinished: 'Juego finalizado',
 
   // GameResults.vue
@@ -84,6 +87,8 @@ export default {
   noWordsYet: 'Aún no hay palabras añadidas',
   previousTeam: 'Equipo Anterior',
   nextTeam: 'Siguiente Equipo',
+  hideWords: 'Ocultar Palabras',
+  showWords: 'Mostrar Palabras',
 
   // WordGuessingGame.vue
   teamTurn: 'Turno de {team}',
@@ -94,6 +99,77 @@ export default {
   incorrectGuess: 'Incorrecto',
   teamWins: '¡{team} Gana!',
   finalScores: 'Puntuaciones Finales:',
+
+  // Town Game
+  playerSetup: 'Configuración de Jugadores',
+  roleSetup: 'Configuración de Roles',
+  requiredRoles: 'Roles Obligatorios',
+  optionalRoles: 'Roles Opcionales',
+  villagerRole: 'Aldeano',
+  assassinRole: 'Asesino',
+  doctorRole: 'Doctor',
+  seerRole: 'Vidente',
+  cupidRole: 'Cupido',
+  witchRole: 'Bruja',
+  villagerDescription: 'Eres un aldeano. Tu objetivo es identificar y eliminar a los asesinos.',
+  assassinDescription: 'Eres un asesino. Tu objetivo es eliminar a los aldeanos sin ser descubierto.',
+  doctorDescription: 'Eres un doctor. Cada noche, puedes salvar a una persona de ser asesinada.',
+  seerDescription: 'Eres un vidente. Cada noche, puedes descubrir el rol de un jugador.',
+  cupidDescription: 'Eres cupido. Puedes unir a dos jugadores en amor.',
+  witchDescription: 'Eres una bruja. Tienes pociones para salvar o matar jugadores.',
+
+  roleAssignment: 'Asignación de Roles',
+  startNight: 'Iniciar Fase Nocturna',
+  nightPhase: 'Fase Nocturna',
+  nightDescription: 'El pueblo duerme. Los roles especiales realizarán sus acciones.',
+  narratorAssassin: 'El Asesino despierta y elige a su víctima...',
+  narratorDoctor: 'El Doctor despierta y elige a alguien para salvar...',
+  narratorSeer: 'El Vidente despierta y elige a alguien para investigar...',
+  narratorSeerResult: 'El Vidente descubre la verdad sobre el jugador elegido...',
+  preNightAnnouncement: 'Que todo el mundo cierre los putos ojos, el pueblo duerme',
+  assassinTurn: 'Turno del Asesino',
+  assassinPrompt: 'Elige a un jugador para eliminar:',
+  doctorTurn: 'Turno del Doctor',
+  doctorPrompt: 'Elige a un jugador para salvar:',
+  seerTurn: 'Turno del Vidente',
+  seerPrompt: 'Elige a un jugador para investigar:',
+  continue: 'Continuar',
+
+  dayPhase: 'Fase Diurna',
+  dayDescription: 'El pueblo despierta. Mira lo que sucedió durante la noche.',
+  nightEvents: 'Eventos Nocturnos',
+  playerKilled: '{player} fue asesinado durante la noche.',
+  playerSaved: '{player} fue atacado pero salvado por el doctor.',
+  peacefulNight: 'Fue una noche tranquila. Nadie fue asesinado.',
+  seerInfo: 'Información del Vidente',
+  seerReveal: '{player} es un {role}.',
+
+  startDiscussion: 'Iniciar Discusión',
+  discussionPhase: 'Fase de Discusión',
+  discussionDescription: 'Discutan quién podría ser el asesino. Tienen 5 minutos.',
+  alivePlayers: 'Jugadores Vivos',
+
+  startVoting: 'Iniciar Votación',
+  votingPhase: 'Fase de Votación',
+  votingDescription: 'Vota por quien crees que es el asesino.',
+  votes: 'vota por:',
+
+  votingResultsPhase: 'Resultados de la Votación',
+  votingResultsDescription: 'Aquí están los resultados de la votación. El jugador con más votos será eliminado.',
+  votingResults: 'Resultados de la Votación',
+  votesReceived: 'votos recibidos',
+  playerEliminated: '¡{player} ha sido eliminado!',
+  continueToNextRound: 'Continuar a la Siguiente Ronda',
+
+  gameOver: 'Fin del Juego',
+  assassinsWin: '¡Los Asesinos Ganan!',
+  villagersWin: '¡Los Aldeanos Ganan!',
+  playerRoles: 'Roles de los Jugadores',
+
+  townGameHowToPlay1: 'Los jugadores reciben roles secretos: Aldeanos, Asesino, Doctor, Vidente, etc.',
+  townGameHowToPlay2: 'Durante la noche, los roles especiales realizan acciones (matar, salvar, investigar).',
+  townGameHowToPlay3: 'Durante el día, los jugadores discuten y votan para eliminar a un sospechoso de ser asesino.',
+  townGameHowToPlay4: 'Los aldeanos ganan si eliminan a todos los asesinos. Los asesinos ganan si igualan o superan en número a los aldeanos.',
 
   // Categories
   categories_list: {

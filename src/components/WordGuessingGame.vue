@@ -81,8 +81,12 @@ const startTimer = () => {
   if (timerActive.value) return;
 
   timerActive.value = true;
-  timerStarted.value = true;
-  timeRemaining.value = 60;
+
+  // Only reset the timer if it's the first time starting
+  if (!timerStarted.value) {
+    timerStarted.value = true;
+    timeRemaining.value = 60;
+  }
 
   timerInterval.value = setInterval(() => {
     if (timeRemaining.value > 0) {
@@ -107,7 +111,9 @@ const pauseTimer = () => {
 const resetTimer = () => {
   pauseTimer();
   timeRemaining.value = 60;
-  timerStarted.value = false;
+  // Don't set timerStarted to false, keep it as true
+  // Start the timer again immediately
+  startTimer();
 };
 
 const getRandomWord = () => {
@@ -264,20 +270,28 @@ onUnmounted(() => {
               {{ t('startGuessing') }}
             </button>
             <template v-else>
-              <button 
-                v-if="timerActive"
-                @click="pauseTimer"
-                class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-full"
-              >
-                {{ t('pauseTimer') }}
-              </button>
-              <button 
-                v-else
-                @click="startTimer"
-                class="bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-full"
-              >
-                {{ t('resumeTimer') }}
-              </button>
+              <div class="flex justify-center space-x-2 sm:space-x-4 w-full">
+                <button 
+                  v-if="timerActive"
+                  @click="pauseTimer"
+                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-1/2"
+                >
+                  {{ t('pauseTimer') }}
+                </button>
+                <button 
+                  v-else
+                  @click="startTimer"
+                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-1/2"
+                >
+                  {{ t('resumeTimer') }}
+                </button>
+                <button 
+                  @click="resetTimer"
+                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-1/2"
+                >
+                  {{ t('restartTimer') }}
+                </button>
+              </div>
             </template>
           </div>
         </div>
@@ -305,7 +319,7 @@ onUnmounted(() => {
         <!-- Return to Main Menu -->
         <button
           @click="returnToMainMenu"
-          class="w-full bg-[var(--color-border)] hover:bg-[var(--color-text-secondary)] text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all mt-2"
+          class="w-full bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all mt-2"
         >
           {{ t('returnToMainMenu') }}
         </button>
