@@ -45,17 +45,24 @@ const voicesLoaded = ref(false);
 const voices = ref([]);
 const isMobile = ref(false);
 
-// Check if device is mobile
+// Check if device is mobile and detect Safari
 onMounted(() => {
   // Simple mobile detection
   isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  // iOS requires user interaction before speech synthesis can work
-  if (isMobile.value && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  // Safari detection (both mobile and desktop)
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  // iOS and Safari require user interaction before speech synthesis can work
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent) || isSafari) {
     // We'll initialize speech synthesis on first user interaction
-    document.addEventListener('touchstart', initSpeechSynthesis, { once: true });
+    if (isMobile.value) {
+      document.addEventListener('touchstart', initSpeechSynthesis, { once: true });
+    }
+    // Also initialize on click for Safari (both mobile and desktop)
+    document.addEventListener('click', initSpeechSynthesis, { once: true });
   } else {
-    // For non-iOS devices, initialize immediately
+    // For non-iOS/Safari devices, initialize immediately
     initSpeechSynthesis();
   }
 });
@@ -162,11 +169,24 @@ const speakText = (text) => {
 
   // For non-mobile or if voices are loaded
   if (voicesLoaded.value) {
-    // Try to find a Google Spanish voice
-    const voz = voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES");
+    // Get language code based on current locale
+    const langCode = locale.value === 'es' ? 'es-ES' : 'en-US';
 
-    // Use the Google voice if found, otherwise let narrar function handle fallbacks
-    narrar(text, voz);
+    // Try to find a Google voice in the correct language (same logic as in narrar function)
+    let selectedVoice = voices.value.find(v => 
+      v.name.includes("Google") && 
+      v.lang.startsWith(langCode.split('-')[0])
+    );
+
+    // If no Google voice found, try any voice in the correct language
+    if (!selectedVoice) {
+      selectedVoice = voices.value.find(v => 
+        v.lang.startsWith(langCode.split('-')[0])
+      );
+    }
+
+    // Use the selected voice if found, otherwise let narrar function handle fallbacks
+    narrar(text, selectedVoice);
   } else {
     // If voices not loaded, use default voice
     narrar(text, null);
@@ -290,11 +310,8 @@ const startNightPhase = () => {
   if (seerPlayers.value.length > 0) nightRoleSequence.value.push('seer');
   // Add other roles as needed (witch, cupid, etc.)
 
-  // Try to find a Google Spanish voice
-  const voz = voicesLoaded.value ? voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES") : null;
-
-  // Speak the pre-night announcement
-  narrar(t('preNightAnnouncement'), voz);
+  // Use the speakText function to ensure consistent voice selection
+  speakText(t('preNightAnnouncement'));
 
   // Start the 10-second timer
   const timerInterval = setInterval(() => {
@@ -307,10 +324,9 @@ const startNightPhase = () => {
       // Set the first role
       currentNightRole.value = nightRoleSequence.value[0];
 
-      // Speak the narrator text for the first role
+      // Speak the narrator text for the first role using the speakText function
       setTimeout(() => {
-        // Use the same voice as before
-        narrar(t('narratorAssassin'), voz);
+        speakText(t('narratorAssassin'));
       }, 500);
     }
   }, 1000);
@@ -326,10 +342,8 @@ const performNightAction = (role, targetId) => {
     // Show the result
     showSeerResult.value = true;
 
-    // Speak the seer result
-    // Try to find a Google Spanish voice
-    const voz = voicesLoaded.value ? voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES") : null;
-    narrar(t('narratorSeerResult'), voz);
+    // Speak the seer result using the speakText function
+    speakText(t('narratorSeerResult'));
 
     return; // Don't advance yet, wait for user to acknowledge
   }
@@ -355,13 +369,11 @@ const advanceNightPhase = () => {
       currentNightRole.value = nightRoleSequence.value[currentIndex + 1];
 
       // Speak the narrator text for the next role
-      // Try to find a Google Spanish voice
-      const voz = voicesLoaded.value ? voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES") : null;
-
+      // Use the speakText function to ensure consistent voice selection
       if (currentNightRole.value === 'doctor') {
-        narrar(t('narratorDoctor'), voz);
+        speakText(t('narratorDoctor'));
       } else if (currentNightRole.value === 'seer') {
-        narrar(t('narratorSeer'), voz);
+        speakText(t('narratorSeer'));
       }
     }
     return;
@@ -371,14 +383,11 @@ const advanceNightPhase = () => {
   if (currentIndex < nightRoleSequence.value.length - 1) {
     currentNightRole.value = nightRoleSequence.value[currentIndex + 1];
 
-    // Speak the narrator text for the next role
-    // Try to find a Google Spanish voice
-    const voz = voicesLoaded.value ? voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES") : null;
-
+    // Speak the narrator text for the next role using the speakText function
     if (currentNightRole.value === 'doctor') {
-      narrar(t('narratorDoctor'), voz);
+      speakText(t('narratorDoctor'));
     } else if (currentNightRole.value === 'seer') {
-      narrar(t('narratorSeer'), voz);
+      speakText(t('narratorSeer'));
     }
   } else {
     // All roles have acted, process the night's events
@@ -455,15 +464,12 @@ const startDayPhase = () => {
   // Make the narrator announce the player who has been eliminated by the assassin
   const killedEvents = dayEvents.value.filter(e => e.type === 'killed');
   if (killedEvents.length > 0) {
-    // Try to find a Google Spanish voice
-    const voz = voicesLoaded.value ? voices.value.find(v => v.name.includes("Google") && v.lang === "es-ES") : null;
-
     // Get the killed player's name
     const killedPlayerId = killedEvents[0].playerId;
     const killedPlayerName = players.value.find(p => p.id === killedPlayerId).name;
 
-    // Narrate the assassination event
-    narrar(t('playerKilled', { player: killedPlayerName }), voz);
+    // Narrate the assassination event using the speakText function
+    speakText(t('playerKilled', { player: killedPlayerName }));
   }
 };
 
