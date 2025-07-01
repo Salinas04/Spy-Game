@@ -213,12 +213,23 @@ const returnToMainMenu = () => {
 
 <template>
   <div class="app-container" :class="{ 'menu-theme': selectedGame === null, 'spy-theme': selectedGame === 'spy', 'word-guessing-theme': selectedGame === 'wordGuessing', 'town-game-theme': selectedGame === 'townGame' }">
-    <!-- Language Switcher (positioned differently on mobile vs desktop) -->
-    <div class="hidden sm:block absolute top-4 left-4 z-50" v-if="selectedGame !== null">
+    <!-- Top navigation bar with back button and language switcher -->
+    <div class="fixed top-0 left-0 right-0 flex justify-between items-center p-3 z-50 bg-[var(--color-background)]/80 backdrop-blur-sm" v-if="selectedGame !== null">
+      <button 
+        @click="returnToMainMenu" 
+        class="flex items-center justify-center p-2 rounded-full hover:bg-[var(--color-background-soft)] transition-all"
+        aria-label="Return to main menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
       <LanguageSwitcher />
     </div>
 
-    <transition name="fade" mode="out-in" appear>
+    <!-- Add padding to content when nav bar is present -->
+    <div :class="{ 'pt-14': selectedGame !== null }">
+      <transition name="fade" mode="out-in" appear>
       <!-- Main Menu -->
       <MainMenu 
         v-if="selectedGame === null" 
@@ -317,6 +328,7 @@ const returnToMainMenu = () => {
     <div class="absolute bottom-0 w-full py-2 text-center text-steel-gray text-sm bg-transparent">
       <p>&copy; 2025 Antonio Salinas</p>
     </div>
+  </div>
   </div>
 </template>
 

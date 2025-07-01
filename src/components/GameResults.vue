@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n';
+import Tooltip from './Tooltip.vue';
 
 const props = defineProps({
   result: {
@@ -78,19 +79,33 @@ const isSingleSpy = spies.length === 1;
 
       <transition name="fade-up" appear>
         <div class="space-y-3">
-          <button 
-            @click="startNewGame" 
-            class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
-          >
-            {{ t('playAgain') }}
-          </button>
+          <Tooltip :text="t('playAgainHelp')" position="bottom" :delay="500">
+            <button 
+              @click="startNewGame" 
+              class="group w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg relative overflow-hidden"
+            >
+              <span class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 transform transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {{ t('playAgain') }}
+              </span>
+            </button>
+          </Tooltip>
 
-          <button 
-            @click="goToMainMenu" 
-            class="w-full bg-steel-gray hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-base font-medium transition-all"
-          >
-            {{ t('returnToMainMenu') }}
-          </button>
+          <Tooltip :text="t('returnToMainMenuHelp')" position="bottom" :delay="500">
+            <button 
+              @click="goToMainMenu" 
+              class="group w-full bg-steel-gray hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-base font-medium transition-all"
+            >
+              <span class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transform transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                {{ t('returnToMainMenu') }}
+              </span>
+            </button>
+          </Tooltip>
         </div>
       </transition>
     </div>

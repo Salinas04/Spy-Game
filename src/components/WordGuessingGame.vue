@@ -192,29 +192,32 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-background-soft)] p-2 sm:p-4">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-8 text-center text-[var(--color-heading)]">{{ t('wordGuessingGame') }}</h1>
+  <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-background-soft)] p-3 sm:p-4">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 sm:mb-8 text-center text-[var(--color-heading)]">{{ t('wordGuessingGame') }}</h1>
 
-    <div class="bg-[var(--color-background-soft)]/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-[95%] sm:max-w-md border border-[var(--color-border)]">
+    <div class="bg-[var(--color-background-soft)]/80 backdrop-blur-sm p-5 sm:p-6 rounded-xl shadow-lg w-full max-w-[98%] sm:max-w-md border border-[var(--color-border)]">
       <!-- Game Over Screen -->
       <div v-if="isGameOver" class="text-center">
-        <h2 class="text-2xl font-semibold mb-6 text-center text-[var(--color-heading)]">{{ t('gameOver') }}</h2>
+        <h2 class="text-3xl font-semibold mb-8 text-center text-[var(--color-heading)]">{{ t('gameOver') }}</h2>
 
-        <div class="mb-6">
-          <p class="text-xl mb-4">{{ t('teamWins', { team: winningTeamName }) }}</p>
+        <div class="mb-8">
+          <p class="text-2xl mb-6 font-bold">{{ t('teamWins', { team: winningTeamName }) }}</p>
 
-          <div class="bg-[var(--color-background-soft)]/70 p-4 rounded-lg border border-[var(--color-border)] mb-4">
-            <h3 class="text-lg font-semibold mb-2 text-[var(--color-heading)]">{{ t('finalScores') }}</h3>
-            <div v-for="(score, index) in teamScores" :key="`score-${index}`" class="mb-2 last:mb-0">
-              <p>{{ teamNames[index] }}: <span class="font-bold text-[var(--color-text-highlight)]">{{ score }}</span></p>
+          <div class="bg-[var(--color-background-soft)]/70 p-6 rounded-xl border-2 border-[var(--color-border)] mb-6 shadow-md">
+            <h3 class="text-xl font-semibold mb-4 text-[var(--color-heading)]">{{ t('finalScores') }}</h3>
+            <div v-for="(score, index) in teamScores" :key="`score-${index}`" class="mb-3 last:mb-0 text-lg">
+              <p>{{ teamNames[index] }}: <span class="font-bold text-[var(--color-text-highlight)] text-xl">{{ score }}</span></p>
             </div>
           </div>
         </div>
 
         <button
           @click="returnToMainMenu"
-          class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
+          class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-5 sm:py-4 px-6 rounded-xl text-xl font-bold transition-all shadow-md hover:shadow-lg flex items-center justify-center"
         >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
           {{ t('returnToMainMenu') }}
         </button>
       </div>
@@ -222,15 +225,18 @@ onUnmounted(() => {
       <!-- Active Game Screen -->
       <div v-else>
         <!-- Team Scores -->
-        <div class="flex justify-between mb-6">
+        <div class="flex justify-between mb-8">
           <div 
             v-for="(score, index) in teamScores" 
             :key="`team-${index}`"
-            class="text-center p-2 sm:p-3 rounded-lg w-[48%] sm:w-auto"
-            :class="{ 'bg-[var(--color-button-primary)]/20 border border-[var(--color-button-primary)]': index === currentTeamIndex }"
+            class="text-center p-3 sm:p-4 rounded-xl w-[48%] shadow-md transition-all duration-300"
+            :class="{ 
+              'bg-[var(--color-button-primary)]/20 border-2 border-[var(--color-button-primary)] scale-105 transform': index === currentTeamIndex,
+              'bg-[var(--color-background-soft)]/70 border border-[var(--color-border)]': index !== currentTeamIndex
+            }"
           >
-            <p class="font-semibold text-sm sm:text-base">{{ teamNames[index] }}</p>
-            <p class="text-xl sm:text-2xl font-bold">{{ score }}</p>
+            <p class="font-semibold text-base sm:text-lg mb-1">{{ teamNames[index] }}</p>
+            <p class="text-2xl sm:text-3xl font-bold" :class="{ 'text-[var(--color-button-primary)]': index === currentTeamIndex }">{{ score }}</p>
           </div>
         </div>
 
@@ -245,50 +251,68 @@ onUnmounted(() => {
         </div>
 
         <!-- Timer -->
-        <div class="mb-6">
-          <div class="flex justify-between items-center mb-2">
-            <h3 class="text-lg font-semibold text-[var(--color-heading)]">{{ t('timer') }}</h3>
-            <div class="text-xl font-mono font-bold" :class="{ 'text-[var(--color-button-primary-hover)]': timeRemaining < 10 }">
+        <div class="mb-8">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-xl font-semibold text-[var(--color-heading)]">{{ t('timer') }}</h3>
+            <div class="text-2xl font-mono font-bold px-3 py-1 rounded-lg" 
+              :class="{ 
+                'text-[var(--color-button-primary-hover)] bg-[var(--color-button-primary-hover)]/10': timeRemaining < 10,
+                'text-[var(--color-button-primary)]': timeRemaining >= 10
+              }">
               {{ timeRemaining }}s
             </div>
           </div>
 
-          <div class="w-full bg-[var(--color-background-soft)]/50 rounded-full h-2.5 mb-4">
+          <div class="w-full bg-[var(--color-background-soft)]/50 rounded-full h-3 mb-5">
             <div 
-              class="bg-[var(--color-button-primary)] h-2.5 rounded-full transition-all duration-1000" 
+              class="bg-[var(--color-button-primary)] h-3 rounded-full transition-all duration-1000" 
               :style="{ width: `${(timeRemaining / 60) * 100}%` }"
               :class="{ 'bg-[var(--color-button-primary-hover)]': timeRemaining < 10 }"
             ></div>
           </div>
 
-          <div class="flex justify-center space-x-2 sm:space-x-4">
+          <div class="flex justify-center space-x-3 sm:space-x-4">
             <button 
               v-if="!timerStarted"
               @click="startTimer"
-              class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-full"
+              class="bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-4 sm:px-5 py-4 sm:py-3 rounded-xl transition-all text-lg font-semibold w-full flex items-center justify-center"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               {{ t('startGuessing') }}
             </button>
             <template v-else>
-              <div class="flex justify-center space-x-2 sm:space-x-4 w-full">
+              <div class="flex justify-center space-x-3 sm:space-x-4 w-full">
                 <button 
                   v-if="timerActive"
                   @click="pauseTimer"
-                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-1/2"
+                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-4 sm:px-5 py-4 sm:py-3 rounded-xl transition-all text-base font-medium w-1/2 flex items-center justify-center"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                   {{ t('pauseTimer') }}
                 </button>
                 <button 
                   v-else
                   @click="startTimer"
-                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-1/2"
+                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-4 sm:px-5 py-4 sm:py-3 rounded-xl transition-all text-base font-medium w-1/2 flex items-center justify-center"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                   {{ t('resumeTimer') }}
                 </button>
                 <button 
                   @click="resetTimer"
-                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base font-medium sm:font-semibold w-1/2"
+                  class="bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-4 sm:px-5 py-4 sm:py-3 rounded-xl transition-all text-base font-medium w-1/2 flex items-center justify-center"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
                   {{ t('restartTimer') }}
                 </button>
               </div>
@@ -297,20 +321,23 @@ onUnmounted(() => {
         </div>
 
         <!-- Current Word -->
-        <div v-if="timerStarted" class="mb-6">
-          <h3 class="text-lg font-semibold mb-2 text-[var(--color-heading)]">{{ t('wordToGuess') }}</h3>
-          <div class="bg-[var(--color-background-soft)]/70 p-4 sm:p-6 rounded-lg border-2 border-[var(--color-button-primary)] text-center shadow-md">
-            <p class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-text-highlight)]">{{ currentWord }}</p>
+        <div v-if="timerStarted" class="mb-8">
+          <h3 class="text-xl font-semibold mb-3 text-[var(--color-heading)]">{{ t('wordToGuess') }}</h3>
+          <div class="bg-[var(--color-background-soft)]/70 p-6 sm:p-8 rounded-xl border-2 border-[var(--color-button-primary)] text-center shadow-lg transform transition-all duration-300 hover:scale-105">
+            <p class="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-text-highlight)]">{{ currentWord }}</p>
           </div>
         </div>
 
         <!-- Guessing Controls -->
-        <div v-if="timerStarted" class="mb-6 flex flex-col space-y-3">
+        <div v-if="timerStarted" class="mb-8 flex flex-col space-y-3">
           <button 
             @click="handleCorrectGuess"
-            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-4 sm:py-3 px-6 rounded-lg text-lg font-bold transition-all shadow-md hover:shadow-lg"
+            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-5 sm:py-4 px-6 rounded-xl text-xl font-bold transition-all shadow-md hover:shadow-lg flex items-center justify-center"
             :disabled="!timerActive"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
             {{ t('correctGuess') }}
           </button>
 
@@ -319,8 +346,11 @@ onUnmounted(() => {
         <!-- Return to Main Menu -->
         <button
           @click="returnToMainMenu"
-          class="w-full bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all mt-2"
+          class="w-full bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] py-4 sm:py-3 px-5 rounded-xl text-lg font-medium transition-all mt-4 flex items-center justify-center"
         >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
           {{ t('returnToMainMenu') }}
         </button>
       </div>

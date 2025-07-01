@@ -105,10 +105,10 @@ const goToMainMenu = () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-background-soft)] p-2 sm:p-4">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-8 text-center text-[var(--color-heading)]">{{ t('wordGuessingGame') }}</h1>
+  <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[var(--color-background)] to-[var(--color-background-soft)] p-3 sm:p-4">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 sm:mb-8 text-center text-[var(--color-heading)]">{{ t('wordGuessingGame') }}</h1>
 
-    <div class="bg-[var(--color-background-soft)]/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-[95%] sm:max-w-md border border-[var(--color-border)]">
+    <div class="bg-[var(--color-background-soft)]/80 backdrop-blur-sm p-5 sm:p-6 rounded-xl shadow-lg w-full max-w-[98%] sm:max-w-md border border-[var(--color-border)]">
       <transition name="fade-down" appear>
         <h2 class="text-2xl font-semibold mb-6 text-center text-[var(--color-heading)]">{{ t('gameSetup') }}</h2>
       </transition>
@@ -254,18 +254,18 @@ const goToMainMenu = () => {
             {{ t('enterWordsForTeam', { team: currentTeamName }) }}
           </h3>
 
-          <div class="flex flex-col sm:flex-row items-center mb-4 space-y-2 sm:space-y-0">
+          <div class="flex flex-col sm:flex-row items-center mb-5 space-y-3 sm:space-y-0">
             <input 
               type="text"
               v-model="currentWord"
               @keyup.enter="addWord"
               :placeholder="t('enterWord')"
-              class="w-full sm:flex-grow bg-[var(--color-background-soft)]/70 border border-[var(--color-border)] rounded-lg sm:rounded-l-lg sm:rounded-r-none px-3 py-3 sm:py-2 text-[var(--color-text)] focus:border-[var(--color-button-primary)] focus:outline-none"
+              class="w-full sm:flex-grow bg-[var(--color-background-soft)]/70 border border-[var(--color-border)] rounded-xl sm:rounded-l-xl sm:rounded-r-none px-4 py-4 sm:py-3 text-[var(--color-text)] text-lg focus:border-[var(--color-button-primary)] focus:outline-none"
               :disabled="isCurrentTeamComplete"
             />
             <button 
               @click="addWord"
-              class="w-full sm:w-auto bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-4 py-3 sm:py-2 rounded-lg sm:rounded-l-none sm:rounded-r-lg transition-all font-medium"
+              class="w-full sm:w-auto bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] px-5 py-4 sm:py-3 rounded-xl sm:rounded-l-none sm:rounded-r-xl transition-all font-medium text-lg"
               :disabled="!currentWord.trim() || isCurrentTeamComplete"
             >
               {{ t('addWord') }}
@@ -273,54 +273,60 @@ const goToMainMenu = () => {
           </div>
 
           <div class="flex justify-between items-center mb-4">
-            <p class="text-sm text-[var(--color-text-secondary)]">
+            <p class="text-base text-[var(--color-text-secondary)]">
               {{ t('wordsRemaining', { count: maxWordsPerTeam - teamWords[currentTeamIndex].length }) }}
             </p>
             <button 
               @click="hideWords = !hideWords" 
-              class="text-sm bg-[var(--color-background-soft)] hover:bg-[var(--color-button-primary)]/20 text-[var(--color-text)] px-3 py-1 rounded-lg transition-all border border-[var(--color-border)]"
+              class="text-base bg-[var(--color-background-soft)] hover:bg-[var(--color-button-primary)]/20 text-[var(--color-text)] px-4 py-2 rounded-xl transition-all border border-[var(--color-border)]"
             >
               {{ hideWords ? t('showWords') : t('hideWords') }}
             </button>
           </div>
 
           <!-- Words List -->
-          <div class="bg-[var(--color-background-soft)]/70 rounded-lg p-4 border border-[var(--color-border)] max-h-60 overflow-y-auto">
+          <div class="bg-[var(--color-background-soft)]/70 rounded-xl p-5 border border-[var(--color-border)] max-h-[40vh] overflow-y-auto">
             <transition-group name="list" tag="div">
               <div 
                 v-for="(word, wordIndex) in teamWords[currentTeamIndex]" 
                 :key="word"
-                class="flex justify-between items-center mb-2 last:mb-0 transition-all duration-300"
+                class="flex justify-between items-center py-3 px-2 mb-2 last:mb-0 transition-all duration-300 border-b border-[var(--color-border)]/30 last:border-b-0"
               >
-                <span>{{ hideWords ? '••••••••' : word }}</span>
+                <span class="text-lg">{{ hideWords ? '••••••••' : word }}</span>
                 <button 
                   @click="removeWord(currentTeamIndex, wordIndex)"
-                  class="text-[var(--color-button-primary-hover)] hover:text-[var(--color-text-highlight)] transition-colors"
+                  class="text-[var(--color-button-primary-hover)] hover:text-[var(--color-text-highlight)] transition-colors text-xl p-2"
                 >
                   ✕
                 </button>
               </div>
-              <div v-if="teamWords[currentTeamIndex].length === 0" key="empty" class="text-[var(--color-text-secondary)] text-center py-2">
+              <div v-if="teamWords[currentTeamIndex].length === 0" key="empty" class="text-[var(--color-text-secondary)] text-center py-4 text-lg">
                 {{ t('noWordsYet') }}
               </div>
             </transition-group>
           </div>
 
           <!-- Team Navigation -->
-          <div class="flex justify-between mt-4 space-x-2 sm:space-x-4" v-if="teamCount > 1">
+          <div class="flex justify-between mt-6 space-x-3 sm:space-x-4" v-if="teamCount > 1">
             <button 
               @click="currentTeamIndex = Math.max(0, currentTeamIndex - 1)"
-              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
+              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-4 sm:px-5 py-4 sm:py-3 rounded-xl transition-all text-base sm:text-lg font-medium flex items-center justify-center"
               :disabled="currentTeamIndex === 0"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
               {{ t('previousTeam') }}
             </button>
             <button 
               @click="currentTeamIndex = Math.min(teamCount - 1, currentTeamIndex + 1)"
-              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-3 sm:px-4 py-3 sm:py-2 rounded-lg transition-all text-sm sm:text-base font-medium"
+              class="flex-1 bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] px-4 sm:px-5 py-4 sm:py-3 rounded-xl transition-all text-base sm:text-lg font-medium flex items-center justify-center"
               :disabled="currentTeamIndex === teamCount - 1"
             >
               {{ t('nextTeam') }}
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </div>
@@ -328,19 +334,26 @@ const goToMainMenu = () => {
 
       <!-- Start Game Button -->
       <transition name="fade-up" appear>
-        <div>
+        <div class="mt-8">
           <button
             @click="startGame"
-            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-4 sm:py-3 px-6 rounded-lg text-lg font-bold transition-all shadow-md hover:shadow-lg mb-4 sm:mb-3"
+            class="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-5 sm:py-4 px-6 rounded-xl text-xl font-bold transition-all shadow-md hover:shadow-lg mb-5 sm:mb-4 flex items-center justify-center"
             :disabled="!areAllTeamsComplete"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             {{ t('startGame') }}
           </button>
 
           <button
             @click="goToMainMenu"
-            class="w-full bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] py-3 sm:py-2 px-4 rounded-lg text-base font-medium transition-all"
+            class="w-full bg-[var(--color-border)] hover:bg-[var(--color-border)]/80 text-[var(--color-button-text)] py-4 sm:py-3 px-5 rounded-xl text-lg font-medium transition-all flex items-center justify-center"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
             {{ t('returnToMainMenu') }}
           </button>
         </div>

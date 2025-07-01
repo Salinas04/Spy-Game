@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Tooltip from './Tooltip.vue';
 
 const props = defineProps({
   players: {
@@ -50,12 +51,20 @@ const currentPlayer = () => {
         <div v-if="!showRole" key="prepare">
           <h2 class="text-2xl font-bold mb-6 text-yellow">{{ t('player', { number: currentPlayerIndex + 1 }) }}</h2>
           <p class="mb-8 text-lg">{{ t('prepareRole') }}</p>
-          <button 
-            @click="revealRole" 
-            class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
-          >
-            {{ t('viewRole') }}
-          </button>
+          <Tooltip :text="t('viewRoleHelp')" position="bottom" :delay="500">
+            <button 
+              @click="revealRole" 
+              class="group w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg relative overflow-hidden"
+            >
+              <span class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 transform transition-transform group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                {{ t('viewRole') }}
+              </span>
+            </button>
+          </Tooltip>
         </div>
 
         <div v-else key="role">
@@ -84,12 +93,23 @@ const currentPlayer = () => {
                 {{ t('regularObjective') }}
               </p>
 
-              <button 
-                @click="nextPlayer" 
-                class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
-              >
-                {{ isLastPlayer() ? t('startGameButton') : t('nextPlayer') }}
-              </button>
+              <Tooltip :text="isLastPlayer() ? t('startGameHelp') : t('nextPlayerHelp')" position="bottom" :delay="500">
+                <button 
+                  @click="nextPlayer" 
+                  class="group w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg relative overflow-hidden"
+                >
+                  <span class="flex items-center justify-center">
+                    <svg v-if="isLastPlayer()" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 transform transition-transform group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    {{ isLastPlayer() ? t('startGameButton') : t('nextPlayer') }}
+                  </span>
+                </button>
+              </Tooltip>
             </div>
           </transition>
         </div>

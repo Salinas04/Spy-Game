@@ -14,6 +14,13 @@ export default {
         'mustard': '#D4AF37', // A more subdued yellow variation
         'steel-gray': '#7A7A7A', // Versatile complement for texture
       },
+      animation: {
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'bounce-slow': 'bounce 2s infinite',
+        'spin-slow': 'spin 3s linear infinite',
+        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+      },
       transitionProperty: {
         'all': 'all',
       },

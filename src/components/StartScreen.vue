@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import locationsData from '../i18n/locations.js';
 import LanguageSwitcher from './LanguageSwitcher.vue';
+import Tooltip from './Tooltip.vue';
 
 const emit = defineEmits(['startGame', 'returnToMainMenu']);
 const { t, locale } = useI18n();
@@ -83,23 +84,27 @@ const goToMainMenu = () => {
         <div class="mb-6">
           <label for="playerCount" class="block text-lg mb-2">{{ t('playerCount') }}</label>
           <div class="flex items-center">
-            <button 
-              @click="playerCount > minPlayers ? playerCount-- : null" 
-              class="bg-yellow hover:bg-mustard text-black px-4 py-2 rounded-l-lg transition-all"
-              :disabled="playerCount <= minPlayers"
-            >
-              -
-            </button>
+            <Tooltip :text="t('decreasePlayerCount')" position="bottom" :delay="500">
+              <button 
+                @click="playerCount > minPlayers ? playerCount-- : null" 
+                class="bg-yellow hover:bg-mustard text-black px-4 py-2 rounded-l-lg transition-all"
+                :disabled="playerCount <= minPlayers"
+              >
+                -
+              </button>
+            </Tooltip>
             <transition name="scale" mode="out-in">
               <span :key="playerCount" class="bg-black text-yellow px-6 py-2 text-xl font-bold">{{ playerCount }}</span>
             </transition>
-            <button 
-              @click="playerCount < maxPlayers ? playerCount++ : null" 
-              class="bg-yellow hover:bg-mustard text-black px-4 py-2 rounded-r-lg transition-all"
-              :disabled="playerCount >= maxPlayers"
-            >
-              +
-            </button>
+            <Tooltip :text="t('increasePlayerCount')" position="bottom" :delay="500">
+              <button 
+                @click="playerCount < maxPlayers ? playerCount++ : null" 
+                class="bg-yellow hover:bg-mustard text-black px-4 py-2 rounded-r-lg transition-all"
+                :disabled="playerCount >= maxPlayers"
+              >
+                +
+              </button>
+            </Tooltip>
           </div>
           <p class="text-sm mt-2 text-steel-gray">{{ t('minMax', { min: minPlayers, max: maxPlayers }) }}</p>
         </div>
@@ -155,23 +160,27 @@ const goToMainMenu = () => {
             <div v-if="spyOption === 'custom'" class="ml-7 mt-2">
               <label for="customSpiesCount" class="block text-sm mb-1">{{ t('customSpiesCount') }}</label>
               <div class="flex items-center">
-                <button 
-                  @click="customSpiesCount > 1 ? customSpiesCount-- : null" 
-                  class="bg-yellow hover:bg-mustard text-black px-3 py-1 rounded-l-lg transition-all"
-                  :disabled="customSpiesCount <= 1"
-                >
-                  -
-                </button>
+                <Tooltip :text="t('decreaseSpiesCount')" position="bottom" :delay="500">
+                  <button 
+                    @click="customSpiesCount > 1 ? customSpiesCount-- : null" 
+                    class="bg-yellow hover:bg-mustard text-black px-3 py-1 rounded-l-lg transition-all"
+                    :disabled="customSpiesCount <= 1"
+                  >
+                    -
+                  </button>
+                </Tooltip>
                 <transition name="scale" mode="out-in">
                   <span :key="customSpiesCount" class="bg-black text-yellow px-4 py-1 text-lg font-bold">{{ customSpiesCount }}</span>
                 </transition>
-                <button 
-                  @click="customSpiesCount < (playerCount - 2) ? customSpiesCount++ : null" 
-                  class="bg-yellow hover:bg-mustard text-black px-3 py-1 rounded-r-lg transition-all"
-                  :disabled="customSpiesCount >= (playerCount - 2)"
-                >
-                  +
-                </button>
+                <Tooltip :text="t('increaseSpiesCount')" position="bottom" :delay="500">
+                  <button 
+                    @click="customSpiesCount < (playerCount - 2) ? customSpiesCount++ : null" 
+                    class="bg-yellow hover:bg-mustard text-black px-3 py-1 rounded-r-lg transition-all"
+                    :disabled="customSpiesCount >= (playerCount - 2)"
+                  >
+                    +
+                  </button>
+                </Tooltip>
               </div>
               <p class="text-xs mt-1 text-steel-gray">{{ t('customSpiesHelp') }}</p>
             </div>
@@ -197,9 +206,11 @@ const goToMainMenu = () => {
                   @change="toggleCategory(category.id)"
                   class="mr-2 h-5 w-5 accent-yellow"
                 />
-                <label :for="'category-' + category.id" class="cursor-pointer hover:text-yellow transition-colors">
-                  {{ category.name }}
-                </label>
+                <Tooltip :text="category.id === 'all' ? t('allCategoriesHelp') : t('categorySelectHelp')" position="right" :delay="500">
+                  <label :for="'category-' + category.id" class="cursor-pointer hover:text-yellow transition-colors">
+                    {{ category.name }}
+                  </label>
+                </Tooltip>
               </div>
             </transition-group>
           </div>
@@ -211,16 +222,27 @@ const goToMainMenu = () => {
         <div>
           <button
             @click="startGame"
-            class="w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg mb-3"
+            class="group w-full bg-yellow hover:bg-mustard text-black py-3 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg mb-3 relative overflow-hidden"
           >
-            {{ t('startGame') }}
+            <span class="flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 transform transition-transform group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ t('startGame') }}
+            </span>
           </button>
 
           <button
             @click="goToMainMenu"
-            class="w-full bg-steel-gray hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-base font-medium transition-all"
+            class="group w-full bg-steel-gray hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-base font-medium transition-all"
           >
-            {{ t('returnToMainMenu') }}
+            <span class="flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transform transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              {{ t('returnToMainMenu') }}
+            </span>
           </button>
 
           <!-- Language Switcher (mobile only) -->
