@@ -97,7 +97,7 @@ const goToMainMenu = () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[#121212] to-[#1A1A2E] p-2 sm:p-4">
+  <div class="flex flex-col items-center justify-center min-h-screen bg-multi-gradient p-2 sm:p-4">
     <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-8 text-center text-white">{{ t('townGame') }}</h1>
 
     <div class="bg-[#1A1A2E]/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-[95%] sm:max-w-md border border-[#2A2A3F]">
@@ -464,4 +464,9 @@ const goToMainMenu = () => {
 .animate-pulse-subtle {
   animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+.bg-multi-gradient {
+  background: linear-gradient(to bottom, #121212, #1A1A2E, #2F2F4A, #4A2F3D, #7B2C35);
+}
+
 </style>
