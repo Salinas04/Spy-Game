@@ -36,9 +36,18 @@ onUnmounted(() => {
   <div class="relative language-dropdown">
     <button 
       @click="toggleDropdown" 
-      class="bg-dark-gray hover:bg-steel-gray text-white py-2 sm:py-1 px-4 sm:px-3 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg border border-steel-gray flex items-center"
+      class="bg-dark-gray hover:bg-steel-gray text-white py-2 sm:py-1 px-4 sm:px-3 rounded-lg text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-lg border border-steel-gray flex items-center overflow-hidden"
     >
-      {{ locale === 'es' ? 'Español' : 'English' }}
+      <transition 
+        name="fade" 
+        mode="out-in"
+        enter-active-class="transition ease-out duration-300"
+        leave-active-class="transition ease-in duration-200"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
+      >
+        <span :key="locale">{{ locale === 'es' ? 'Español' : 'English' }}</span>
+      </transition>
       <svg 
         class="w-4 h-4 ml-1" 
         fill="none" 
@@ -55,24 +64,34 @@ onUnmounted(() => {
       </svg>
     </button>
 
-    <div 
-      v-if="isOpen" 
-      class="absolute mt-1 w-full sm:w-auto bg-dark-gray border border-steel-gray rounded-lg shadow-lg z-10"
+    <transition 
+      name="dropdown"
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
     >
-      <button 
-        @click="setLanguage('en')" 
-        class="block w-full text-left px-4 py-2 text-white hover:bg-steel-gray rounded-t-lg"
-        :class="{ 'bg-steel-gray': locale === 'en' }"
+      <div 
+        v-if="isOpen" 
+        class="absolute mt-1 w-full sm:w-auto bg-dark-gray border border-steel-gray rounded-lg shadow-lg z-10"
       >
-        English
-      </button>
-      <button 
-        @click="setLanguage('es')" 
-        class="block w-full text-left px-4 py-2 text-white hover:bg-steel-gray rounded-b-lg"
-        :class="{ 'bg-steel-gray': locale === 'es' }"
-      >
-        Español
-      </button>
-    </div>
+        <button 
+          @click="setLanguage('en')" 
+          class="block w-full text-left px-4 py-2 text-white hover:bg-steel-gray rounded-t-lg transition-colors duration-200"
+          :class="{ 'bg-steel-gray': locale === 'en' }"
+        >
+          English
+        </button>
+        <button 
+          @click="setLanguage('es')" 
+          class="block w-full text-left px-4 py-2 text-white hover:bg-steel-gray rounded-b-lg transition-colors duration-200"
+          :class="{ 'bg-steel-gray': locale === 'es' }"
+        >
+          Español
+        </button>
+      </div>
+    </transition>
   </div>
 </template>

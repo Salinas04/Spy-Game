@@ -290,11 +290,7 @@ onMounted(() => {
       </div>
 
       <!-- Language Switcher (mobile only) -->
-      <div 
-        v-motion
-        :initial="languageSwitcherMotion.initial"
-        :enter="languageSwitcherMotion.enter"
-        :hovered="languageSwitcherMotion.hover"
+      <div
         class="sm:hidden mt-4 flex justify-center language-switcher-wrapper"
       >
         <LanguageSwitcher />
@@ -302,11 +298,7 @@ onMounted(() => {
     </div>
 
     <!-- Language Switcher (desktop) -->
-    <div 
-      v-motion
-      :initial="languageSwitcherMotion.initial"
-      :enter="languageSwitcherMotion.enter"
-      :hovered="languageSwitcherMotion.hover"
+    <div
       class="hidden sm:block absolute top-4 left-4 z-50 language-switcher-wrapper"
     >
       <LanguageSwitcher />

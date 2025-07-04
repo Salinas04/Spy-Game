@@ -114,12 +114,6 @@ const goToMainMenu = () => {
           </div>
 
           <div class="bg-[#2A2A3F]/50 p-4 rounded-lg border border-[#35364A] mb-4">
-            <!-- Current Value Display with larger touch target -->
-            <div class="flex justify-center items-center mb-4">
-              <transition name="scale" mode="out-in">
-                <span :key="playerCount" class="text-5xl font-bold text-white">{{ playerCount }}</span>
-              </transition>
-            </div>
 
             <!-- Quick Adjustment Buttons - Larger for better touch targets -->
             <div class="flex items-center justify-between mb-4">
@@ -135,9 +129,10 @@ const goToMainMenu = () => {
                 </svg>
               </button>
 
-              <div class="flex flex-col items-center">
-                <div class="text-sm text-[#A0A0B8] mb-1">{{ t('playerCount') }}</div>
-                <div class="text-4xl font-bold text-white">{{ playerCount }}</div>
+              <div class="flex justify-center items-center mb-4">
+                <transition name="scale" mode="out-in">
+                  <span :key="playerCount" class="text-5xl font-bold text-white">{{ playerCount }}</span>
+                </transition>
               </div>
 
               <button 
