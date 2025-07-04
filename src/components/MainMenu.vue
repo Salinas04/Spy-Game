@@ -9,14 +9,14 @@ const { t } = useI18n();
 // Motion presets for animations
 const titleMotion = {
   initial: { opacity: 0, y: -150, scale: 0.7, rotate: -5 },
-  enter: { 
-    opacity: 1, 
+  enter: {
+    opacity: 1,
     y: 0,
     scale: 1,
     rotate: 0,
-    transition: { 
-      type: 'spring', 
-      stiffness: 80, 
+    transition: {
+      type: 'spring',
+      stiffness: 80,
       damping: 12,
       duration: 1.2
     }

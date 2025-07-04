@@ -430,4 +430,83 @@ const returnToMainMenu = () => {
   padding-left: env(safe-area-inset-left);
   padding-bottom: calc(2rem + env(safe-area-inset-bottom));
 }
+/* Minimalist scrollbar styling */
+/* For WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(128, 128, 128, 0.5);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
+}
+
+/* Apply theme-specific scrollbar colors */
+.menu-theme ::-webkit-scrollbar-thumb {
+  background-color: rgba(160, 160, 184, 0.3); /* Based on --color-text-secondary */
+  border: 1px solid rgba(160, 160, 184, 0.1);
+  background-clip: padding-box;
+}
+.menu-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(160, 160, 184, 0.5);
+}
+
+.spy-theme ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 215, 0, 0.3); /* Based on --color-yellow */
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  background-clip: padding-box;
+}
+.spy-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 215, 0, 0.5);
+}
+
+.word-guessing-theme ::-webkit-scrollbar-thumb {
+  background-color: rgba(244, 162, 97, 0.3); /* Based on --color-button-primary */
+  border: 1px solid rgba(244, 162, 97, 0.1);
+  background-clip: padding-box;
+}
+.word-guessing-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(244, 162, 97, 0.5);
+}
+
+.town-game-theme ::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 97, 255, 0.3); /* Based on --color-button-primary */
+  border: 1px solid rgba(75, 97, 255, 0.1);
+  background-clip: padding-box;
+}
+.town-game-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(75, 97, 255, 0.5);
+}
+
+/* Firefox theme-specific scrollbar colors */
+.menu-theme * {
+  scrollbar-color: rgba(160, 160, 184, 0.3) transparent;
+}
+.spy-theme * {
+  scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
+}
+.word-guessing-theme * {
+  scrollbar-color: rgba(244, 162, 97, 0.3) transparent;
+}
+.town-game-theme * {
+  scrollbar-color: rgba(75, 97, 255, 0.3) transparent;
+}
 </style>
