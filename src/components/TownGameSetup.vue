@@ -172,9 +172,13 @@ const goToMainMenu = () => {
       <!-- Player Names - Enhanced for mobile -->
       <transition name="fade-left" appear>
         <div class="mb-6">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-semibold text-white">{{ t('playerSetup') }}</h3>
-            <span class="text-sm text-[#A0A0B8] bg-[#2A2A3F]/70 px-2 py-1 rounded-md">{{ playerCount }} {{ t('player', { number: '' }) }}s</span>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+            <h3 class="text-lg sm:text-xl font-semibold text-white text-center sm:text-left">
+              {{ t('playerSetup') }}
+            </h3>
+            <span class="text-xs sm:text-sm text-[#A0A0B8] bg-[#2A2A3F]/70 px-2 py-1 rounded-md text-center w-full sm:w-auto">
+              {{ playerCount }} {{ t('player', { number: '' }) }}/s
+            </span>
           </div>
 
           <div class="bg-[#2A2A3F]/50 p-4 rounded-lg border border-[#35364A] mb-4 max-h-[40vh] overflow-y-auto">
