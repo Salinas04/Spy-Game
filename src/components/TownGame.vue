@@ -31,6 +31,10 @@ const votingResults = ref([]);
 const gameResult = ref(null);
 const eliminatedPlayers = ref([]);
 const revealedRoles = ref({});
+// Cupid state
+const lovers = ref([]);
+const cupidSelectedFirst = ref(null);
+const showCupidResult = ref(false);
 // Night phase state
 const currentNightRole = ref(''); // 'assassin', 'doctor', 'seer', etc.
 const nightRoleSequence = ref([]); // Array of roles to process in sequence
@@ -224,6 +228,10 @@ onMounted(() => {
 // Methods
 const initializePlayers = () => {
   players.value = [];
+  // Reset Cupid-related state
+  lovers.value = [];
+  cupidSelectedFirst.value = null;
+  showCupidResult.value = false;
 
   // Create player objects
   for (let i = 0; i < props.gameSettings.playerCount; i++) {
@@ -306,10 +314,15 @@ const startNightPhase = () => {
   // Determine the sequence of roles for this night
   nightRoleSequence.value = ['assassin']; // Assassin always goes first
 
+  // Add Cupid on the first night only
+  if (currentRound.value === 1 && cupidPlayers.value.length > 0) {
+    nightRoleSequence.value.unshift('cupid'); // Cupid goes before assassin on first night
+  }
+
   // Add other roles if they exist and are alive
   if (doctorPlayers.value.length > 0) nightRoleSequence.value.push('doctor');
   if (seerPlayers.value.length > 0) nightRoleSequence.value.push('seer');
-  // Add other roles as needed (witch, cupid, etc.)
+  // Add other roles as needed (witch, etc.)
 
   // Use the speakText function to ensure consistent voice selection
   speakText(t('preNightAnnouncement'));
@@ -327,14 +340,45 @@ const startNightPhase = () => {
 
       // Speak the narrator text for the first role using the speakText function
       setTimeout(() => {
-        speakText(t('narratorAssassin'));
+        if (currentNightRole.value === 'cupid') {
+          speakText(t('narratorCupid'));
+        } else if (currentNightRole.value === 'assassin') {
+          speakText(t('narratorAssassin'));
+        }
       }, 500);
     }
   }, 1000);
 };
 
 const performNightAction = (role, targetId) => {
-  nightActions.value[role] = targetId;
+  // Special handling for Cupid to select two players
+  if (role === 'cupid') {
+    if (cupidSelectedFirst.value === null) {
+      // First selection
+      cupidSelectedFirst.value = targetId;
+      return; // Don't advance yet, wait for second selection
+    } else {
+      // Second selection
+      if (cupidSelectedFirst.value !== targetId) {
+        // Store both lovers
+        lovers.value = [cupidSelectedFirst.value, targetId];
+        nightActions.value[role] = [cupidSelectedFirst.value, targetId];
+
+        // Show the result
+        showCupidResult.value = true;
+
+        // Speak the cupid result
+        speakText(t('narratorCupidResult'));
+
+        return; // Don't advance yet, wait for user to acknowledge
+      } else {
+        // Can't select the same player twice
+        return;
+      }
+    }
+  } else {
+    nightActions.value[role] = targetId;
+  }
 
   // Special handling for seer to show result immediately
   if (role === 'seer') {
@@ -357,6 +401,34 @@ const advanceNightPhase = () => {
   // Find the current role's index in the sequence
   const currentIndex = nightRoleSequence.value.indexOf(currentNightRole.value);
 
+  // Handle cupid result case
+  if (showCupidResult.value) {
+    showCupidResult.value = false; // Reset for next time
+    cupidSelectedFirst.value = null; // Reset first selection
+
+    // Check if cupid is the last role
+    if (currentIndex === nightRoleSequence.value.length - 1) {
+      // All roles have acted, process the night's events
+      processDayEvents();
+    } else {
+      // Move to the next role
+      currentNightRole.value = nightRoleSequence.value[currentIndex + 1];
+
+      // Speak the narrator text for the next role
+      // Use the speakText function to ensure consistent voice selection
+      if (currentNightRole.value === 'cupid') {
+        speakText(t('narratorCupid'));
+      } else if (currentNightRole.value === 'doctor') {
+        speakText(t('narratorDoctor'));
+      } else if (currentNightRole.value === 'seer') {
+        speakText(t('narratorSeer'));
+      } else if (currentNightRole.value === 'assassin') {
+        speakText(t('narratorAssassin'));
+      }
+    }
+    return;
+  }
+
   // Handle seer result case
   if (showSeerResult.value) {
     showSeerResult.value = false; // Reset for next time
@@ -371,10 +443,14 @@ const advanceNightPhase = () => {
 
       // Speak the narrator text for the next role
       // Use the speakText function to ensure consistent voice selection
-      if (currentNightRole.value === 'doctor') {
+      if (currentNightRole.value === 'cupid') {
+        speakText(t('narratorCupid'));
+      } else if (currentNightRole.value === 'doctor') {
         speakText(t('narratorDoctor'));
       } else if (currentNightRole.value === 'seer') {
         speakText(t('narratorSeer'));
+      } else if (currentNightRole.value === 'assassin') {
+        speakText(t('narratorAssassin'));
       }
     }
     return;
@@ -385,10 +461,14 @@ const advanceNightPhase = () => {
     currentNightRole.value = nightRoleSequence.value[currentIndex + 1];
 
     // Speak the narrator text for the next role using the speakText function
-    if (currentNightRole.value === 'doctor') {
+    if (currentNightRole.value === 'cupid') {
+      speakText(t('narratorCupid'));
+    } else if (currentNightRole.value === 'doctor') {
       speakText(t('narratorDoctor'));
     } else if (currentNightRole.value === 'seer') {
       speakText(t('narratorSeer'));
+    } else if (currentNightRole.value === 'assassin') {
+      speakText(t('narratorAssassin'));
     }
   } else {
     // All roles have acted, process the night's events
@@ -425,6 +505,26 @@ const processDayEvents = () => {
       type: 'killed',
       playerId: killedPlayerId
     });
+
+    // Check if the killed player is a lover
+    if (lovers.value.includes(killedPlayerId)) {
+      // Find the other lover
+      const otherLoverId = lovers.value.find(id => id !== killedPlayerId);
+      if (otherLoverId !== undefined) {
+        const otherLover = players.value.find(p => p.id === otherLoverId);
+        // If the other lover is still alive, kill them too
+        if (otherLover && otherLover.isAlive) {
+          otherLover.isAlive = false;
+          eliminatedPlayers.value.push(otherLoverId);
+
+          dayEvents.value.push({
+            type: 'lovedDeath',
+            playerId: otherLoverId,
+            lovedPlayerId: killedPlayerId
+          });
+        }
+      }
+    }
   }
 
   // Process seer's action
@@ -498,7 +598,7 @@ const processVotes = () => {
   // Count votes for each player
   const voteCount = {};
   players.value.forEach(player => {
-    if (player.isAlive && player.votedFor !== null) {
+    if (player.isAlive && player.votedFor !== null && player.votedFor !== -1) {
       voteCount[player.votedFor] = (voteCount[player.votedFor] || 0) + 1;
     }
   });
@@ -507,12 +607,18 @@ const processVotes = () => {
   let maxVotes = 0;
   let eliminatedPlayerId = null;
 
-  Object.entries(voteCount).forEach(([playerId, count]) => {
-    if (count > maxVotes) {
-      maxVotes = count;
-      eliminatedPlayerId = parseInt(playerId);
-    }
-  });
+  // Only process votes if there are any
+  if (Object.keys(voteCount).length > 0) {
+    Object.entries(voteCount).forEach(([playerId, count]) => {
+      if (count > maxVotes) {
+        maxVotes = count;
+        eliminatedPlayerId = parseInt(playerId);
+      }
+    });
+  } else {
+    // No votes were cast or all players chose not to vote
+    eliminatedPlayerId = null;
+  }
 
   // Store voting results
   votingResults.value = {
@@ -527,8 +633,29 @@ const processVotes = () => {
 const continueAfterVoting = () => {
   // Eliminate the player with the most votes
   if (votingResults.value.eliminatedPlayerId !== null) {
-    players.value[votingResults.value.eliminatedPlayerId].isAlive = false;
-    eliminatedPlayers.value.push(votingResults.value.eliminatedPlayerId);
+    const eliminatedId = votingResults.value.eliminatedPlayerId;
+    players.value[eliminatedId].isAlive = false;
+    eliminatedPlayers.value.push(eliminatedId);
+
+    // Check if the eliminated player is a lover
+    if (lovers.value.includes(eliminatedId)) {
+      // Find the other lover
+      const otherLoverId = lovers.value.find(id => id !== eliminatedId);
+      if (otherLoverId !== undefined) {
+        const otherLover = players.value.find(p => p.id === otherLoverId);
+        // If the other lover is still alive, eliminate them too
+        if (otherLover && otherLover.isAlive) {
+          otherLover.isAlive = false;
+          eliminatedPlayers.value.push(otherLoverId);
+
+          // Add to voting results that the lover died too
+          votingResults.value.lovedDeath = {
+            playerId: otherLoverId,
+            lovedPlayerId: eliminatedId
+          };
+        }
+      }
+    }
   }
 
   // Check win conditions
@@ -545,6 +672,15 @@ const continueAfterVoting = () => {
 const checkWinConditions = () => {
   const aliveAssassins = players.value.filter(p => p.isAlive && p.role === 'assassin').length;
   const aliveVillagers = players.value.filter(p => p.isAlive && p.role !== 'assassin').length;
+  const alivePlayers = players.value.filter(p => p.isAlive);
+
+  // Check if only lovers remain alive
+  if (lovers.value.length === 2 && 
+      alivePlayers.length === 2 && 
+      alivePlayers.every(p => lovers.value.includes(p.id))) {
+    gameResult.value = 'lovers';
+    return true;
+  }
 
   // Assassins win if they equal or outnumber the villagers
   if (aliveAssassins >= aliveVillagers) {
@@ -583,6 +719,15 @@ const doctorPlayers = computed(() => {
 
 const seerPlayers = computed(() => {
   return players.value.filter(p => p.role === 'seer' && p.isAlive);
+});
+
+const cupidPlayers = computed(() => {
+  return players.value.filter(p => p.role === 'cupid' && p.isAlive);
+});
+
+// Computed property to check if a player is a lover
+const isLover = computed(() => {
+  return (playerId) => lovers.value.includes(playerId);
 });
 
 // Game control
@@ -730,7 +875,8 @@ const returnToMainMenu = () => {
                           class="w-10 h-10 rounded-full flex items-center justify-center"
                           :class="{
                             'bg-[#FF4E4E]/20': currentNightRole === 'assassin',
-                            'bg-[#4B61FF]/20': currentNightRole !== 'assassin'
+                            'bg-[#FF69B4]/20': currentNightRole === 'cupid',
+                            'bg-[#4B61FF]/20': currentNightRole !== 'assassin' && currentNightRole !== 'cupid'
                           }"
                         >
                           <svg v-if="currentNightRole === 'assassin'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF4E4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -744,6 +890,9 @@ const returnToMainMenu = () => {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
+                          <svg v-else-if="currentNightRole === 'cupid'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF69B4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
                         </div>
                       </div>
 
@@ -753,6 +902,8 @@ const returnToMainMenu = () => {
                         <span v-else-if="currentNightRole === 'doctor'">{{ t('narratorDoctor') }}</span>
                         <span v-else-if="currentNightRole === 'seer' && !showSeerResult">{{ t('narratorSeer') }}</span>
                         <span v-else-if="currentNightRole === 'seer' && showSeerResult">{{ t('narratorSeerResult') }}</span>
+                        <span v-else-if="currentNightRole === 'cupid' && !showCupidResult">{{ t('narratorCupid') }}</span>
+                        <span v-else-if="currentNightRole === 'cupid' && showCupidResult">{{ t('narratorCupidResult') }}</span>
                       </p>
                     </div>
                   </div>
@@ -866,6 +1017,82 @@ const returnToMainMenu = () => {
                   </div>
                 </div>
 
+                <!-- Cupid Action -->
+                <div v-else-if="currentNightRole === 'cupid' && !showCupidResult" class="mb-6" key="cupid-action">
+                  <div class="bg-[#2A2A3F]/50 p-4 rounded-lg border border-[#35364A] mb-4">
+                    <h3 class="text-xl font-semibold mb-3 text-[#FF69B4] flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      {{ cupidSelectedFirst === null ? t('cupidTurn') : t('cupidSecondSelection') }}
+                    </h3>
+                    <p class="text-[#A0A0B8] mb-4">
+                      {{ cupidSelectedFirst === null ? t('cupidPrompt') : t('cupidSecondPrompt') }}
+                    </p>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button 
+                      v-for="player in alivePlayers" 
+                      :key="`cupid-target-${player.id}`"
+                      @click="performNightAction('cupid', player.id)"
+                      class="bg-[#2A2A3F] hover:bg-[#FF69B4]/20 text-white py-3 px-4 rounded-lg transition-all text-base border border-[#35364A] flex items-center justify-between"
+                      :class="{ 
+                        'bg-[#FF69B4]/20 border-[#FF69B4] shadow-[0_0_0_1px_rgba(255,105,180,0.5)]': cupidSelectedFirst === player.id,
+                        'opacity-50': cupidSelectedFirst === player.id
+                      }"
+                      :disabled="cupidSelectedFirst === player.id"
+                    >
+                      <span>{{ player.name }}</span>
+                      <div v-if="cupidSelectedFirst === player.id" class="w-6 h-6 rounded-full bg-[#FF69B4] flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Cupid Result -->
+                <div v-else-if="currentNightRole === 'cupid' && showCupidResult" class="mb-6" key="cupid-result">
+                  <div class="bg-[#2A2A3F]/50 p-4 rounded-lg border border-[#35364A] mb-6">
+                    <h3 class="text-xl font-semibold mb-3 text-[#FF69B4] flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      {{ t('cupidResult') }}
+                    </h3>
+
+                    <div class="bg-[#1A1A2E]/70 p-4 rounded-lg border border-[#35364A] mb-4">
+                      <div class="flex items-center mb-3">
+                        <div class="flex-shrink-0 mr-3">
+                          <div class="w-10 h-10 rounded-full bg-[#FF69B4]/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF69B4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div>
+                          <p class="text-white font-medium">
+                            {{ t('loversCreated', { 
+                              player1: players[lovers[0]].name, 
+                              player2: players[lovers[1]].name 
+                            }) }}
+                          </p>
+                        </div>
+                      </div>
+                      <p class="text-[#A0A0B8] text-sm">{{ t('loversDescription') }}</p>
+                    </div>
+                  </div>
+
+                  <button 
+                    @click="advanceNightPhase" 
+                    class="bg-gradient-to-r from-[#4B61FF] to-[#6879FF] text-white py-4 px-6 rounded-lg text-lg font-bold transition-all shadow-md hover:shadow-lg w-full active:scale-[0.98] active:shadow-inner"
+                  >
+                    {{ t('continue') }}
+                  </button>
+                </div>
+
                 <!-- Seer Result -->
                 <div v-else-if="currentNightRole === 'seer' && showSeerResult" class="mb-6" key="seer-result">
                   <div class="bg-[#2A2A3F]/50 p-4 rounded-lg border border-[#35364A] mb-6">
@@ -936,7 +1163,13 @@ const returnToMainMenu = () => {
                       </p>
                     </div>
 
-                    <p v-if="dayEvents.filter(e => e.type === 'killed').length === 0" key="peaceful" class="text-[#A0A0B8]">
+                    <div v-for="(event, index) in dayEvents.filter(e => e.type === 'lovedDeath')" :key="`loved-event-${index}`" class="mb-2 last:mb-0">
+                      <p class="text-[#FF69B4]">
+                        {{ t('playerDiedOfLove', { player: players[event.playerId].name, lovedPlayer: players[event.lovedPlayerId].name }) }}
+                      </p>
+                    </div>
+
+                    <p v-if="dayEvents.filter(e => e.type === 'killed' || e.type === 'lovedDeath').length === 0" key="peaceful" class="text-[#A0A0B8]">
                       {{ t('peacefulNight') }}
                     </p>
                   </transition-group>
@@ -965,7 +1198,15 @@ const returnToMainMenu = () => {
                 <div class="bg-[#2A2A3F]/50 p-4 rounded-lg border border-[#35364A] mb-4">
                   <transition-group name="list" tag="div">
                     <div v-for="player in alivePlayers" :key="`alive-${player.id}`" class="mb-2 last:mb-0">
-                      <p class="text-white">{{ player.name }}</p>
+                      <div class="flex items-center">
+                        <p class="text-white">{{ player.name }}</p>
+                        <!-- Lover indicator -->
+                        <span v-if="isLover(player.id)" class="ml-2 text-[#FF69B4]">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
                   </transition-group>
                 </div>
@@ -1062,19 +1303,43 @@ const returnToMainMenu = () => {
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                       </button>
+
+                      <!-- No Vote Option -->
+                      <button
+                        @click="vote(voter.id, -1)"
+                        class="bg-[#2A2A3F] hover:bg-[#FF4E4E]/20 text-white py-3 px-4 rounded-lg transition-all text-base border border-[#35364A] flex items-center justify-between"
+                        :class="{ 'hover:border-[#FF4E4E]/50': true }"
+                      >
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 rounded-full bg-[#2A2A3F] flex items-center justify-center mr-2 border border-[#35364A]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FF4E4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </div>
+                          <span>{{ t('noVote') }}</span>
+                        </div>
+                      </button>
                     </div>
                   </div>
 
                   <!-- Already voted display -->
                   <div v-else class="bg-[#1A1A2E]/70 p-3 rounded-lg flex items-center justify-between">
                     <div class="flex items-center">
-                      <div class="w-6 h-6 rounded-full bg-[#4B61FF]/20 flex items-center justify-center mr-2">
-                        <span class="text-xs text-[#4B61FF]">{{ players[voter.votedFor].id + 1 }}</span>
+                      <div v-if="voter.votedFor === -1" class="w-6 h-6 rounded-full bg-[#FF4E4E]/20 flex items-center justify-center mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FF4E4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                       </div>
-                      <span class="text-white">{{ t('votedFor', { target: players[voter.votedFor].name }) }}</span>
+                      <div v-else class="w-6 h-6 rounded-full bg-[#4B61FF]/20 flex items-center justify-center mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#4B61FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span v-if="voter.votedFor === -1" class="text-white">{{ t('noVote') }}</span>
+                      <span v-else class="text-white">{{ t('votedHidden') }}</span>
                     </div>
 
-                    <div class="w-6 h-6 rounded-full bg-[#4B61FF] flex items-center justify-center">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center" :class="voter.votedFor === -1 ? 'bg-[#FF4E4E]' : 'bg-[#4B61FF]'">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                       </svg>
@@ -1149,7 +1414,7 @@ const returnToMainMenu = () => {
                   <!-- Eliminated player announcement -->
                   <transition name="fade">
                     <div v-if="votingResults.eliminatedPlayerId !== null" class="mt-6 pt-4 border-t border-[#35364A] bg-[#1A1A2E]/70 p-4 rounded-lg">
-                      <div class="flex items-center">
+                      <div class="flex items-center mb-3">
                         <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#FF4E4E]/20 flex items-center justify-center mr-3">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF4E4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -1157,6 +1422,33 @@ const returnToMainMenu = () => {
                         </div>
                         <p class="text-[#FF4E4E] font-bold text-lg">
                           {{ t('playerEliminated', { player: players[votingResults.eliminatedPlayerId].name }) }}
+                        </p>
+                      </div>
+
+                      <!-- Lover death announcement -->
+                      <div v-if="votingResults.lovedDeath" class="flex items-center mt-4 pt-4 border-t border-[#35364A]">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#FF69B4]/20 flex items-center justify-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF69B4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        </div>
+                        <p class="text-[#FF69B4] font-bold text-lg">
+                          {{ t('playerDiedOfLove', { 
+                            player: players[votingResults.lovedDeath.playerId].name, 
+                            lovedPlayer: players[votingResults.lovedDeath.lovedPlayerId].name 
+                          }) }}
+                        </p>
+                      </div>
+                    </div>
+                    <div v-else class="mt-6 pt-4 border-t border-[#35364A] bg-[#1A1A2E]/70 p-4 rounded-lg">
+                      <div class="flex items-center mb-3">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#4B61FF]/20 flex items-center justify-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#4B61FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <p class="text-[#4B61FF] font-bold text-lg">
+                          {{ t('noElimination') }}
                         </p>
                       </div>
                     </div>
@@ -1229,10 +1521,13 @@ const returnToMainMenu = () => {
                   <h3 class="text-3xl font-bold relative z-10" 
                     :class="{ 
                       'text-[#FF4E4E]': gameResult === 'assassins', 
-                      'text-[#4B61FF]': gameResult === 'villagers' 
+                      'text-[#4B61FF]': gameResult === 'villagers',
+                      'text-[#FF69B4]': gameResult === 'lovers'
                     }"
                   >
-                    {{ gameResult === 'assassins' ? t('assassinsWin') : t('villagersWin') }}
+                    <span v-if="gameResult === 'assassins'">{{ t('assassinsWin') }}</span>
+                    <span v-else-if="gameResult === 'villagers'">{{ t('villagersWin') }}</span>
+                    <span v-else-if="gameResult === 'lovers'">{{ t('loversWin') }}</span>
                   </h3>
                 </div>
 
@@ -1272,7 +1567,15 @@ const returnToMainMenu = () => {
                           </span>
                         </div>
                         <div class="text-left">
-                          <div class="text-white font-medium">{{ player.name }}</div>
+                          <div class="flex items-center">
+                            <span class="text-white font-medium">{{ player.name }}</span>
+                            <!-- Lover indicator -->
+                            <span v-if="isLover(player.id)" class="ml-2 text-[#FF69B4]">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                              </svg>
+                            </span>
+                          </div>
                           <div class="text-xs"
                             :class="{ 
                               'text-[#FF4E4E]': player.role === 'assassin', 

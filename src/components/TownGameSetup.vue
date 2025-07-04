@@ -75,6 +75,9 @@ const toggleRole = (role) => {
   // Don't allow disabling villager or assassin
   if (role === 'villager' || role === 'assassin') return;
 
+  // Don't allow toggling witch role since it's not functional
+  if (role === 'witch') return;
+
   roles.value[role] = !roles.value[role];
 };
 
@@ -342,31 +345,26 @@ const goToMainMenu = () => {
                     </div>
                     <div>
                       <label for="role-cupid" class="text-white font-medium">{{ t('cupidRole') }}</label>
-                      <p class="text-xs text-[#A0A0B8] mt-1">{{ t('cupidDescription').split('.')[0] }}</p>
+                      <p class="text-xs text-[#A0A0B8] mt-1">{{ t('narratorCupid').split('.')[0] }}</p>
                     </div>
                   </div>
                 </div>
 
-                <!-- Witch Role Card -->
+                <!-- Witch Role Card (Disabled) -->
                 <div 
-                  class="bg-[#2A2A3F]/70 rounded-lg p-3 border transition-all"
-                  :class="roles.witch ? 'border-[#4B61FF] shadow-[0_0_0_1px_rgba(75,97,255,0.5)]' : 'border-[#35364A] hover:border-[#4B61FF]/50'"
-                  @click="toggleRole('witch')"
+                  class="bg-[#2A2A3F]/70 rounded-lg p-3 border border-[#35364A] opacity-50 cursor-not-allowed"
                 >
                   <div class="flex items-center">
                     <div class="flex-shrink-0 mr-3">
                       <div 
-                        class="w-6 h-6 rounded-md flex items-center justify-center transition-colors"
-                        :class="roles.witch ? 'bg-[#4B61FF]' : 'bg-[#2A2A3F] border border-[#4B61FF]/50'"
+                        class="w-6 h-6 rounded-md flex items-center justify-center bg-[#2A2A3F] border border-[#35364A]"
                       >
-                        <svg v-if="roles.witch" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
+                        <!-- No checkmark for disabled role -->
                       </div>
                     </div>
                     <div>
                       <label for="role-witch" class="text-white font-medium">{{ t('witchRole') }}</label>
-                      <p class="text-xs text-[#A0A0B8] mt-1">{{ t('witchDescription').split('.')[0] }}</p>
+                      <p class="text-xs text-[#A0A0B8] mt-1">{{ t('witchDescription').split('.')[0] }} <span class="text-[#FF4E4E]">({{ t('notAvailable') }})</span></p>
                     </div>
                   </div>
                 </div>

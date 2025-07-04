@@ -13,6 +13,7 @@ export default {
   // Common
   yes: 'Yes',
   no: 'No',
+  notAvailable: 'Not Available',
   spyOptions: 'Spy Options:',
   singleSpy: 'Single Spy',
   randomSpies: 'Random Multiple Spies',
@@ -126,6 +127,8 @@ export default {
   narratorDoctor: 'The Doctor wakes up and chooses someone to save...',
   narratorSeer: 'The Seer wakes up and chooses someone to investigate...',
   narratorSeerResult: 'The Seer learns the truth about the chosen player...',
+  narratorCupid: 'Cupid wakes up and chooses two players to fall in love...',
+  narratorCupidResult: 'Cupid has linked two players in eternal love...',
   preNightAnnouncement: 'Everyone close your eyes, the town sleeps...',
   assassinTurn: 'Assassin\'s Turn',
   assassinPrompt: 'Choose a player to eliminate:',
@@ -133,6 +136,11 @@ export default {
   doctorPrompt: 'Choose a player to save:',
   seerTurn: 'Seer\'s Turn',
   seerPrompt: 'Choose a player to investigate:',
+  cupidTurn: 'Cupid\'s Turn',
+  cupidPrompt: 'Choose the first player to fall in love:',
+  cupidSecondSelection: 'Cupid\'s Second Selection',
+  cupidSecondPrompt: 'Choose the second player to fall in love:',
+  cupidResult: 'Cupid\'s Result',
   continue: 'Continue',
 
   dayPhase: 'Day Phase',
@@ -141,6 +149,9 @@ export default {
   playerKilled: '{player} was killed during the night.',
   playerSaved: '{player} was targeted but saved by the doctor.',
   peacefulNight: 'It was a peaceful night. No one was killed.',
+  playerDiedOfLove: '{player} died of heartbreak after the death of their beloved {lovedPlayer}.',
+  loversCreated: '{player1} and {player2} are now in love.',
+  loversDescription: 'If one dies, the other will die too. If they are the last ones alive, they win together.',
   seerInfo: 'Seer Information',
   seerReveal: '{player} is a {role}.',
 
@@ -152,6 +163,8 @@ export default {
   startVoting: 'Start Voting',
   votingPhase: 'Voting Phase',
   votingDescription: 'Vote for who you think is the assassin.',
+  noVote: 'Skip Vote',
+  votedHidden: 'Has voted (hidden)',
   votes: 'votes for:',
 
   votingResultsPhase: 'Voting Results',
@@ -159,11 +172,13 @@ export default {
   votingResults: 'Voting Results',
   votesReceived: 'votes received',
   playerEliminated: '{player} has been eliminated!',
+  noElimination: 'No player was eliminated this round.',
   continueToNextRound: 'Continue to Next Round',
 
   gameOver: 'Game Over',
   assassinsWin: 'The Assassins Win!',
   villagersWin: 'The Villagers Win!',
+  loversWin: 'The Lovers Win!',
   playerRoles: 'Player Roles',
 
   townGameHowToPlay1: 'Players are assigned secret roles: Villagers, Assassin, Doctor, Seer, etc.',

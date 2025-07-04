@@ -13,6 +13,7 @@ export default {
   // Common
   yes: 'Sí',
   no: 'No',
+  notAvailable: 'No Disponible',
   spyOptions: 'Opciones de Espías:',
   singleSpy: 'Un Solo Espía',
   randomSpies: 'Espías Múltiples Aleatorios',
@@ -153,6 +154,8 @@ export default {
   narratorDoctor: 'El Doctor despierta y elige a alguien para salvar...',
   narratorSeer: 'El Vidente despierta y elige a alguien para investigar...',
   narratorSeerResult: 'El Vidente descubre la verdad sobre el jugador elegido...',
+  narratorCupid: 'Cupido despierta y elige a dos jugadores para enamorar...',
+  narratorCupidResult: 'Cupido ha unido a dos jugadores en amor eterno...',
   preNightAnnouncement: 'Que todo el mundo cierre los putos ojos, el pueblo duerme',
   assassinTurn: 'Turno del Asesino',
   assassinPrompt: 'Elige a un jugador para eliminar:',
@@ -160,6 +163,11 @@ export default {
   doctorPrompt: 'Elige a un jugador para salvar:',
   seerTurn: 'Turno del Vidente',
   seerPrompt: 'Elige a un jugador para investigar:',
+  cupidTurn: 'Turno de Cupido',
+  cupidPrompt: 'Elige al primer jugador para enamorar:',
+  cupidSecondSelection: 'Segunda Selección de Cupido',
+  cupidSecondPrompt: 'Elige al segundo jugador para enamorar:',
+  cupidResult: 'Resultado de Cupido',
   continue: 'Continuar',
 
   dayPhase: 'Fase Diurna',
@@ -168,6 +176,9 @@ export default {
   playerKilled: '{player} fue asesinado durante la noche.',
   playerSaved: '{player} fue atacado pero salvado por el doctor.',
   peacefulNight: 'Fue una noche tranquila. Nadie fue asesinado.',
+  playerDiedOfLove: '{player} murió de pena por la muerte de su amado {lovedPlayer}.',
+  loversCreated: '{player1} y {player2} están ahora enamorados.',
+  loversDescription: 'Si uno muere, el otro también morirá. Si son los últimos con vida, ganarán juntos.',
   seerInfo: 'Información del Vidente',
   seerReveal: '{player} es un {role}.',
 
@@ -179,6 +190,8 @@ export default {
   startVoting: 'Iniciar Votación',
   votingPhase: 'Fase de Votación',
   votingDescription: 'Vota por quien crees que es el asesino.',
+  noVote: 'Omitir Voto',
+  votedHidden: 'Ha votado (oculto)',
   votes: 'vota por:',
 
   votingResultsPhase: 'Resultados de la Votación',
@@ -186,11 +199,13 @@ export default {
   votingResults: 'Resultados de la Votación',
   votesReceived: 'votos recibidos',
   playerEliminated: '¡{player} ha sido eliminado!',
+  noElimination: 'Ningún jugador fue eliminado en esta ronda.',
   continueToNextRound: 'Continuar a la Siguiente Ronda',
 
   gameOver: 'Fin del Juego',
   assassinsWin: '¡Los Asesinos Ganan!',
   villagersWin: '¡Los Aldeanos Ganan!',
+  loversWin: '¡Los Enamorados Ganan!',
   playerRoles: 'Roles de los Jugadores',
 
   townGameHowToPlay1: 'Los jugadores reciben roles secretos: Aldeanos, Asesino, Doctor, Vidente, etc.',

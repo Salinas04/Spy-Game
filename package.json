@@ -9,9 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/motion": "^2.0.0",
+    "defu": "^6.1.4",
     "vue": "^3.3.4",
-    "vue-i18n": "^9.14.4",
-    "@vueuse/motion": "^2.0.0"
+    "vue-i18n": "^9.14.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
