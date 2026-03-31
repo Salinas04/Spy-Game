@@ -287,6 +287,24 @@ onMounted(() => {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
+
+        <!-- Hot Potato Button -->
+        <button
+          v-motion
+          :initial="buttonMotion.initial"
+          :enter="buttonMotion.enter"
+          :hovered="buttonMotion.hover"
+          @click="selectGame('hotPotato')"
+          class="game-button group w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-primary-hover)] text-[var(--color-button-text)] py-4 px-6 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-between"
+        >
+          <span class="flex items-center">
+            <span class="game-icon flex items-center justify-center text-xl">🥔</span>
+            {{ t('hotPotatoGame') }}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="arrow-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
 
       <!-- Language Switcher (mobile only) -->

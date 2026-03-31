@@ -10,6 +10,8 @@ import WordGuessingSetup from './components/WordGuessingSetup.vue';
 import WordGuessingGame from './components/WordGuessingGame.vue';
 import TownGameSetup from './components/TownGameSetup.vue';
 import TownGame from './components/TownGame.vue';
+import HotPotatoSetup from './components/HotPotatoSetup.vue';
+import HotPotatoGame from './components/HotPotatoGame.vue';
 import LanguageSwitcher from './components/LanguageSwitcher.vue';
 import locationsData from './i18n/locations.js';
 
@@ -17,7 +19,7 @@ import locationsData from './i18n/locations.js';
 const { locale } = useI18n();
 
 // App state
-const selectedGame = ref(null); // 'spy' or 'wordGuessing' or 'townGame' or null (main menu)
+const selectedGame = ref(null); // 'spy' | 'wordGuessing' | 'townGame' | 'hotPotato' | null
 
 // Function to update theme color meta tag
 const updateThemeColor = (game) => {
@@ -29,6 +31,8 @@ const updateThemeColor = (game) => {
       metaThemeColor.setAttribute('content', '#FFF8E7'); // Light beige for word guessing game
     } else if (game === 'townGame') {
       metaThemeColor.setAttribute('content', '#121212'); // Dark theme for town game
+    } else if (game === 'hotPotato') {
+      metaThemeColor.setAttribute('content', '#1A0800'); // Dark warm for hot potato
     } else {
       metaThemeColor.setAttribute('content', '#1E1E2F'); // Dark blue for main menu
     }
@@ -64,6 +68,10 @@ const townGamePhase = ref('setup'); // 'setup', 'play', 'results'
 const townGameSettings = ref(null);
 const townGameResult = ref(null);
 
+// Hot Potato state
+const hotPotatoPhase = ref('setup'); // 'setup' | 'play'
+const hotPotatoSettings = ref(null);
+
 // Handle game selection from main menu
 const handleSelectGame = (gameType) => {
   selectedGame.value = gameType;
@@ -77,6 +85,9 @@ const handleSelectGame = (gameType) => {
     townGamePhase.value = 'setup';
     townGameSettings.value = null;
     townGameResult.value = null;
+  } else if (gameType === 'hotPotato') {
+    hotPotatoPhase.value = 'setup';
+    hotPotatoSettings.value = null;
   }
 };
 
@@ -100,6 +111,12 @@ const startTownGame = (settings) => {
 const handleTownGameOver = (result) => {
   townGameResult.value = result;
   townGamePhase.value = 'results';
+};
+
+// Hot Potato handlers
+const startHotPotatoGame = (settings) => {
+  hotPotatoSettings.value = settings;
+  hotPotatoPhase.value = 'play';
 };
 
 // Start a new game with the specified settings
@@ -212,7 +229,7 @@ const returnToMainMenu = () => {
 </script>
 
 <template>
-  <div class="app-container" :class="{ 'menu-theme': selectedGame === null, 'spy-theme': selectedGame === 'spy', 'word-guessing-theme': selectedGame === 'wordGuessing', 'town-game-theme': selectedGame === 'townGame' }">
+  <div class="app-container" :class="{ 'menu-theme': selectedGame === null, 'spy-theme': selectedGame === 'spy', 'word-guessing-theme': selectedGame === 'wordGuessing', 'town-game-theme': selectedGame === 'townGame', 'hot-potato-theme': selectedGame === 'hotPotato' }">
     <!-- Top navigation bar with back button and language switcher -->
     <div class="fixed top-0 left-0 right-0 flex justify-between items-center p-3 z-50 bg-[var(--color-background)]/80 backdrop-blur-sm" v-if="selectedGame !== null">
       <button 
@@ -305,23 +322,37 @@ const returnToMainMenu = () => {
       <!-- Town Game (El Pueblo Duerme) -->
       <template v-else-if="selectedGame === 'townGame'">
         <!-- Setup Phase -->
-        <TownGameSetup 
-          v-if="townGamePhase === 'setup'" 
-          @startGame="startTownGame" 
+        <TownGameSetup
+          v-if="townGamePhase === 'setup'"
+          @startGame="startTownGame"
           @returnToMainMenu="returnToMainMenu"
           key="town-game-setup"
         />
 
         <!-- Play Phase -->
-        <TownGame 
-          v-else-if="townGamePhase === 'play' || townGamePhase === 'results'" 
-          :gameSettings="townGameSettings" 
+        <TownGame
+          v-else-if="townGamePhase === 'play' || townGamePhase === 'results'"
+          :gameSettings="townGameSettings"
           @gameOver="handleTownGameOver"
           @returnToMainMenu="returnToMainMenu"
           key="town-game-play"
         />
+      </template>
 
-        <!-- Results Phase (handled within the game component) -->
+      <!-- Hot Potato -->
+      <template v-else-if="selectedGame === 'hotPotato'">
+        <HotPotatoSetup
+          v-if="hotPotatoPhase === 'setup'"
+          @startGame="startHotPotatoGame"
+          @returnToMainMenu="returnToMainMenu"
+          key="hot-potato-setup"
+        />
+        <HotPotatoGame
+          v-else-if="hotPotatoPhase === 'play'"
+          :gameSettings="hotPotatoSettings"
+          @returnToMainMenu="returnToMainMenu"
+          key="hot-potato-play"
+        />
       </template>
     </transition>
     <!-- Footer -->
@@ -413,6 +444,39 @@ const returnToMainMenu = () => {
   --color-steel-gray: var(--color-text-secondary);
   --color-yellow: var(--color-button-primary);
   --color-mustard: var(--color-button-primary-hover);
+}
+
+/* Hot Potato Theme - Cálido, urgente y energético */
+.hot-potato-theme {
+  --color-background: #1A0800;
+  --color-text: #FFFFFF;
+  --color-text-secondary: #C97B4B;
+  --color-button-primary: #FF6B2B;
+  --color-button-primary-hover: #FF8C55;
+  --color-button-text: #FFFFFF;
+  --color-border: #4A2010;
+
+  --color-heading: #FFB347;
+  --color-primary: var(--color-button-primary);
+  --color-secondary: var(--color-button-primary-hover);
+  --color-accent: #FF3B3B;
+  --color-background-soft: #2A1005;
+  --color-background-mute: #331508;
+  --color-steel-gray: var(--color-text-secondary);
+  --color-yellow: #FFB347;
+  --color-mustard: #FF6B2B;
+}
+
+.hot-potato-theme ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 107, 43, 0.3);
+  border: 1px solid rgba(255, 107, 43, 0.1);
+  background-clip: padding-box;
+}
+.hot-potato-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 107, 43, 0.5);
+}
+.hot-potato-theme * {
+  scrollbar-color: rgba(255, 107, 43, 0.3) transparent;
 }
 
 .app-container {
